@@ -1,0 +1,44 @@
+User-agent: *
+Allow: /
+
+# OpenAI / ChatGPT
+User-agent: GPTBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+
+# Anthropic Claude
+User-agent: ClaudeBot
+Allow: /
+User-agent: Claude-Web
+Allow: /
+
+# Perplexity AI Search
+User-agent: PerplexityBot
+Allow: /
+
+# Google & Gemini AI
+User-agent: Googlebot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+
+# Apple Intelligence
+User-agent: Applebot
+Allow: /
+User-agent: Applebot-Extended
+Allow: /
+
+# Microsoft Bing / Copilot
+User-agent: Bingbot
+Allow: /
+
+# Common Crawl & AI Indexing
+User-agent: CCBot
+Allow: /
+User-agent: Bytespider
+Allow: /
+User-agent: cohere-ai
+Allow: /
+
+Sitemap: http://localhost:8080/sitemap.xml
