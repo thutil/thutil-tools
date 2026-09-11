@@ -43,7 +43,7 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>th</text></svg>">
     
     <!-- Design System CSS -->
-    <link rel="stylesheet" href="<?= base_url('assets/css/main.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('assets/css/main.css?v=' . (file_exists(FCPATH . 'assets/css/main.css') ? filemtime(FCPATH . 'assets/css/main.css') : '2.2')) ?>">
     
     <!-- Leaflet CSS for GIS Mapping -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
@@ -583,7 +583,7 @@
 
     <!-- Core Scripts -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script src="<?= base_url('assets/js/webapp.js') ?>"></script>
+    <script src="<?= base_url('assets/js/webapp.js?v=' . (file_exists(FCPATH . 'assets/js/webapp.js') ? filemtime(FCPATH . 'assets/js/webapp.js') : '2.2')) ?>"></script>
     <?= $this->renderSection('scripts') ?>
 </body>
 </html>

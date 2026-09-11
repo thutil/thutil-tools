@@ -132,6 +132,15 @@ button, input, select, textarea {
     font-size: inherit;
 }
 
+button {
+    cursor: pointer;
+    border: none;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+}
+
 /* ==========================================================================
    APP HEADER (E-FILING CLEAN WHITE WITH GREEN ACCENTS)
    ========================================================================== */
@@ -533,24 +542,97 @@ body.sidebar-wide .app-sidebar {
 }
 
 /* ==========================================================================
-   CATEGORY CHIPS (E-FILING GREEN TABS)
+   CATEGORY CHIPS & TAB BARS (E-FILING GREEN SEGMENTED CONTROL)
    ========================================================================== */
 .category-chips-bar {
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
-    margin-bottom: 1.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.tab-bar, .segmented-control {
+    display: inline-flex;
+    align-items: center;
+    background: #e2e8f0;
+    background: rgba(15, 23, 42, 0.05);
+    padding: 5px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    gap: 6px;
+    margin-bottom: 1.5rem;
+    max-width: 100%;
+    overflow-x: auto;
+    box-sizing: border-box;
+}
+
+[data-theme="dark"] .tab-bar, 
+[data-theme="dark"] .segmented-control {
+    background: #1e293b;
+    border-color: #334155;
+}
+
+.tab-btn {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    border: none !important;
+    outline: none !important;
+    background: transparent;
+    color: var(--text-secondary);
+    padding: 0.65rem 1.25rem;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+    font-family: inherit;
+    user-select: none;
+    line-height: 1.4;
+}
+
+.tab-btn:hover {
+    color: var(--green-primary);
+    background: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme="dark"] .tab-btn:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.tab-btn.active {
+    background: var(--green-primary) !important;
+    color: #ffffff !important;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(22, 163, 74, 0.35);
+}
+
+.tab-btn svg {
+    flex-shrink: 0;
 }
 
 .chip-btn {
+    appearance: none !important;
+    -webkit-appearance: none !important;
     background: var(--bg-surface);
     border: 1.5px solid var(--border-color);
     color: var(--text-secondary);
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius-sm);
-    font-size: 0.85rem;
+    padding: 0.5rem 1.15rem;
+    border-radius: 9999px;
+    font-size: 0.88rem;
     font-weight: 600;
     cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    transition: all 0.15s ease;
+    font-family: inherit;
+    user-select: none;
+    line-height: 1.4;
 }
 
 .chip-btn:hover {
@@ -560,9 +642,10 @@ body.sidebar-wide .app-sidebar {
 }
 
 .chip-btn.active {
-    background: var(--green-primary);
-    color: #ffffff;
-    border-color: var(--green-primary);
+    background: var(--green-primary) !important;
+    color: #ffffff !important;
+    border-color: var(--green-primary) !important;
+    box-shadow: 0 2px 6px rgba(22, 163, 74, 0.25);
 }
 
 /* ==========================================================================

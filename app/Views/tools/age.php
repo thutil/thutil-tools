@@ -40,10 +40,24 @@
     </div>
 </div>
 
-<!-- Tab Group for Detailed Calculations -->
+<!-- Tab Group for Detailed Calculations (Segmented Control) -->
 <div class="tab-bar">
-    <button class="tab-btn active" data-tab="tab-detailed-age">คำนวณอายุแบบระบุวันเกิด (ละเอียด)</button>
-    <button class="tab-btn" data-tab="tab-date-diff">เปรียบเทียบระยะห่างระหว่าง 2 วันที่ (ห่างกันกี่ปี)</button>
+    <button type="button" class="tab-btn active" data-tab="tab-detailed-age">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        <span>คำนวณอายุแบบระบุวันเกิด (ละเอียด)</span>
+    </button>
+    <button type="button" class="tab-btn" data-tab="tab-date-diff">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <span>เปรียบเทียบระยะห่างระหว่าง 2 วันที่ (ห่างกันกี่ปี)</span>
+    </button>
 </div>
 
 <!-- Tab 1: Detailed Age -->
@@ -106,5 +120,5 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
-<script src="<?= base_url('assets/js/modules/age-calculator.js') ?>"></script>
+<script src="<?= base_url('assets/js/modules/age-calculator.js?v=' . (file_exists(FCPATH . 'assets/js/modules/age-calculator.js') ? filemtime(FCPATH . 'assets/js/modules/age-calculator.js') : '2.2')) ?>"></script>
 <?= $this->endSection() ?>

@@ -247,21 +247,24 @@ document.addEventListener('DOMContentLoaded', () => {
             const edu = getThaiEducationGrade(age, 0);
 
             quickYearResult.innerHTML = `
-                <div style="font-size: 1.15rem; font-weight: 700; color: var(--green-primary); margin-bottom: 0.35rem;">
+                <div style="font-size: 1.3rem; font-weight: 800; color: var(--green-primary); margin-bottom: 0.75rem;">
                     อายุย่างเข้า: ${age} ปี (ปี พ.ศ. ${beYear} / ค.ศ. ${ceYear})
                 </div>
-                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.6rem;">
-                    <span class="tag-badge" style="background: var(--green-tint); color: var(--green-primary); font-weight: 700;">
-                        ช่วงวัย: ${lifeStage.stage}
-                    </span>
-                    <span class="tag-badge" style="background: rgba(59, 130, 246, 0.1); color: #2563eb; font-weight: 700;">
-                        เกณฑ์การศึกษา: ${edu}
-                    </span>
-                    <span class="tag-badge">
-                        ปีนักษัตร: ${zodiac}
-                    </span>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem;">
+                    <div style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.75rem; border-radius: 6px; background: var(--green-tint); border: 1px solid var(--green-tint-border); color: var(--green-primary); font-size: 0.85rem; font-weight: 600;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <span>ช่วงวัย: ${lifeStage.stage}</span>
+                    </div>
+                    <div style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.75rem; border-radius: 6px; background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.2); color: #1d4ed8; font-size: 0.85rem; font-weight: 600;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path></svg>
+                        <span>เกณฑ์การศึกษา: ${edu}</span>
+                    </div>
+                    <div style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.75rem; border-radius: 6px; background: var(--bg-surface); border: 1px solid var(--border-color); color: var(--text-primary); font-size: 0.85rem; font-weight: 600;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        <span>ปีนักษัตร: ${zodiac}</span>
+                    </div>
                 </div>
-                <div style="font-size: 0.85rem; color: var(--text-muted);">
+                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6;">
                     ${lifeStage.desc}
                 </div>
             `;
