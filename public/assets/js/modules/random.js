@@ -1,6 +1,7 @@
 /**
- * Gamified Thai Randomizer: Lucky Spin Wheel, 3-Reel Slot Machine, Crypto Numbers, Names & Fireworks
+ * Thai Random Generator: Lucky Spin Wheel in Focus Mode, Cryptographic Numbers, Names & Fireworks
  * 100% Client-Side with Web Audio API Synthesizer & Canvas Particle Engine
+ * Strict Rule: Pure SVG Icons, Zero Emojis
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -12,12 +13,30 @@ document.addEventListener('DOMContentLoaded', () => {
     let isSoundOn = localStorage.getItem('thutil_random_sound') !== 'false';
 
     const btnToggleSound = document.getElementById('btn-toggle-sound');
-    const soundIcon = document.getElementById('sound-icon');
+    const soundIconContainer = document.getElementById('sound-icon-container');
     const soundLabel = document.getElementById('sound-label');
 
+    const SVG_SOUND_ON = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+        </svg>
+    `;
+    const SVG_SOUND_OFF = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <line x1="23" y1="9" x2="17" y2="15"></line>
+            <line x1="17" y1="9" x2="23" y2="15"></line>
+        </svg>
+    `;
+
     function updateSoundBtnUI() {
-        if (soundIcon) soundIcon.textContent = isSoundOn ? '🔊' : '🔇';
-        if (soundLabel) soundLabel.textContent = isSoundOn ? 'เสียง: เปิด' : 'เสียง: ปิด';
+        if (soundIconContainer) {
+            soundIconContainer.innerHTML = isSoundOn ? SVG_SOUND_ON : SVG_SOUND_OFF;
+        }
+        if (soundLabel) {
+            soundLabel.textContent = isSoundOn ? 'เสียง: เปิด' : 'เสียง: ปิด';
+        }
     }
     updateSoundBtnUI();
 
@@ -39,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Ticking sound when wheel passes a slice or slot rolls
+    // Ticking sound when wheel passes a slice
     function playTickSound() {
         if (!isSoundOn) return;
         try {
@@ -48,8 +67,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.type = 'triangle';
-            osc.frequency.setValueAtTime(800, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + 0.035);
+            osc.frequency.setValueAtTime(820, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(140, audioCtx.currentTime + 0.035);
             gain.gain.setValueAtTime(0.18, audioCtx.currentTime);
             gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.035);
             osc.connect(gain);
@@ -186,7 +205,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     alpha: 1,
                     decay: Math.random() * 0.02 + 0.015,
                     size: Math.random() * 3 + 2,
-                    isSpark: true,
                     update() {
                         this.x += this.vx;
                         this.y += this.vy;
@@ -222,7 +240,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!celebCtx) return;
         celebCtx.clearRect(0, 0, celebCanvas.width, celebCanvas.height);
 
-        // Update rockets
         for (let i = rockets.length - 1; i >= 0; i--) {
             const r = rockets[i];
             r.update();
@@ -233,7 +250,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Update particles
         for (let i = particles.length - 1; i >= 0; i--) {
             const p = particles[i];
             p.update();
@@ -253,12 +269,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function triggerCelebration(durationMs = 4500) {
+    function triggerCelebration() {
         if (!celebCanvas || !celebCtx) return;
         celebCanvas.style.display = 'block';
         resizeCelebCanvas();
 
-        // Confetti burst from center & sides
         const origins = [
             { x: window.innerWidth * 0.2, y: window.innerHeight * 0.4 },
             { x: window.innerWidth * 0.5, y: window.innerHeight * 0.35 },
@@ -271,7 +286,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Launch 4-6 fireworks rockets staggered
         for (let i = 0; i < 5; i++) {
             setTimeout(() => {
                 rockets.push(new FireworkRocket());
@@ -287,11 +301,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const btnFireworksTest = document.getElementById('btn-fireworks-test');
     if (btnFireworksTest) {
-        btnFireworksTest.addEventListener('click', () => triggerCelebration(4500));
+        btnFireworksTest.addEventListener('click', triggerCelebration);
     }
 
     // =========================================================================
-    // 3. WINNER CELEBRATION POPUP MODAL
+    // 3. WINNER POPUP MODAL
     // =========================================================================
     const winnerModal = document.getElementById('winner-popup-modal');
     const winnerNameDisplay = document.getElementById('winner-name-display');
@@ -322,29 +336,31 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnSpinAgain) {
         btnSpinAgain.addEventListener('click', () => {
             closeWinnerPopup();
-            triggerWheelSpin();
+            if (focusMode === 'wheel') {
+                triggerWheelSpin();
+            } else {
+                triggerFocusRoll();
+            }
         });
     }
 
     // =========================================================================
-    // 4. TAB NAVIGATION
+    // 4. MAIN PAGE TABS (SETUP ONLY)
     // =========================================================================
     const tabWheel = document.getElementById('tab-rand-wheel');
-    const tabSlot = document.getElementById('tab-rand-slot');
     const tabNames = document.getElementById('tab-rand-names');
     const tabNumbers = document.getElementById('tab-rand-numbers');
     const tabTeams = document.getElementById('tab-rand-teams');
 
     const panelWheel = document.getElementById('panel-rand-wheel');
-    const panelSlot = document.getElementById('panel-rand-slot');
     const panelNames = document.getElementById('panel-rand-names');
     const panelNumbers = document.getElementById('panel-rand-numbers');
     const panelTeams = document.getElementById('panel-rand-teams');
 
-    const allTabs = [tabWheel, tabSlot, tabNames, tabNumbers, tabTeams];
-    const allPanels = [panelWheel, panelSlot, panelNames, panelNumbers, panelTeams];
+    const allTabs = [tabWheel, tabNames, tabNumbers, tabTeams];
+    const allPanels = [panelWheel, panelNames, panelNumbers, panelTeams];
 
-    function switchMode(targetTab, targetPanel) {
+    function switchMainTab(targetTab, targetPanel) {
         allTabs.forEach(t => t?.classList.remove('active'));
         allPanels.forEach(p => { if (p) p.style.display = 'none'; });
 
@@ -352,24 +368,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if (targetPanel) targetPanel.style.display = 'block';
     }
 
-    if (tabWheel) tabWheel.addEventListener('click', () => switchMode(tabWheel, panelWheel));
-    if (tabSlot) tabSlot.addEventListener('click', () => switchMode(tabSlot, panelSlot));
-    if (tabNames) tabNames.addEventListener('click', () => switchMode(tabNames, panelNames));
-    if (tabNumbers) tabNumbers.addEventListener('click', () => switchMode(tabNumbers, panelNumbers));
-    if (tabTeams) tabTeams.addEventListener('click', () => switchMode(tabTeams, panelTeams));
+    if (tabWheel) tabWheel.addEventListener('click', () => switchMainTab(tabWheel, panelWheel));
+    if (tabNames) tabNames.addEventListener('click', () => switchMainTab(tabNames, panelNames));
+    if (tabNumbers) tabNumbers.addEventListener('click', () => switchMainTab(tabNumbers, panelNumbers));
+    if (tabTeams) tabTeams.addEventListener('click', () => switchMainTab(tabTeams, panelTeams));
 
     // =========================================================================
-    // 5. INTERACTIVE LUCKY SPIN WHEEL
+    // 5. GORGEOUS LUCKY SPIN WHEEL (RENDERED IN FOCUS MODE)
     // =========================================================================
     const wheelCanvas = document.getElementById('wheel-canvas');
     const wheelCtx = wheelCanvas ? wheelCanvas.getContext('2d') : null;
     const wheelItemsInput = document.getElementById('wheel-items-input');
     const btnUpdateWheel = document.getElementById('btn-update-wheel');
-    const btnSpinWheel = document.getElementById('btn-spin-wheel');
+    const btnFocusSpinWheel = document.getElementById('btn-focus-spin-wheel');
     const wheelCenterBtn = document.getElementById('wheel-center-btn');
     const wheelPointer = document.getElementById('wheel-pointer');
     const wheelItemsCountBadge = document.getElementById('wheel-items-count-badge');
     const wheelAutoRemoveCheck = document.getElementById('wheel-remove-winner-auto');
+    const btnLaunchWheelFocus = document.getElementById('btn-launch-wheel-focus');
 
     const WHEEL_COLORS = [
         '#ef4444', '#f59e0b', '#10b981', '#06b6d4',
@@ -402,21 +418,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const height = wheelCanvas.height;
         const cx = width / 2;
         const cy = height / 2;
-        const radius = cx - 18; // Leave margin for outer rim
+        const radius = cx - 24;
         const sliceCount = wheelItems.length;
         const sliceAngle = (Math.PI * 2) / sliceCount;
 
         wheelCtx.clearRect(0, 0, width, height);
 
-        // Draw Outer Gold Ring with Pegs
+        // Outer Metallic Gold Ring with shadow
         wheelCtx.save();
         wheelCtx.beginPath();
-        wheelCtx.arc(cx, cy, radius + 8, 0, Math.PI * 2);
+        wheelCtx.arc(cx, cy, radius + 12, 0, Math.PI * 2);
         wheelCtx.fillStyle = '#b45309';
+        wheelCtx.shadowColor = 'rgba(245, 158, 11, 0.5)';
+        wheelCtx.shadowBlur = 18;
         wheelCtx.fill();
         wheelCtx.restore();
 
-        // Draw Slices
+        // Inner wheel segments
         wheelCtx.save();
         wheelCtx.translate(cx, cy);
         wheelCtx.rotate(wheelAngle);
@@ -425,7 +443,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const startAngle = i * sliceAngle;
             const endAngle = startAngle + sliceAngle;
 
-            // Wedge
             wheelCtx.beginPath();
             wheelCtx.moveTo(0, 0);
             wheelCtx.arc(0, 0, radius, startAngle, endAngle);
@@ -435,37 +452,37 @@ document.addEventListener('DOMContentLoaded', () => {
             wheelCtx.fillStyle = color;
             wheelCtx.fill();
 
-            // Border
-            wheelCtx.lineWidth = 2;
-            wheelCtx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+            // Inner slice border
+            wheelCtx.lineWidth = 2.5;
+            wheelCtx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
             wheelCtx.stroke();
 
-            // Text label
+            // Segment Label Typography
             wheelCtx.save();
             wheelCtx.rotate(startAngle + sliceAngle / 2);
             wheelCtx.textAlign = 'right';
             wheelCtx.textBaseline = 'middle';
             wheelCtx.fillStyle = '#ffffff';
-            wheelCtx.shadowColor = 'rgba(0, 0, 0, 0.7)';
-            wheelCtx.shadowBlur = 4;
-            wheelCtx.font = `bold ${sliceCount > 12 ? '13px' : '15px'} 'Sarabun', sans-serif`;
+            wheelCtx.shadowColor = 'rgba(0, 0, 0, 0.85)';
+            wheelCtx.shadowBlur = 5;
+            wheelCtx.font = `bold ${sliceCount > 14 ? '14px' : sliceCount > 8 ? '16px' : '18px'} 'Sarabun', sans-serif`;
 
             let label = wheelItems[i];
-            if (label.length > 18) label = label.substring(0, 16) + '...';
-            wheelCtx.fillText(label, radius - 20, 0);
+            if (label.length > 20) label = label.substring(0, 18) + '...';
+            wheelCtx.fillText(label, radius - 24, 0);
             wheelCtx.restore();
         }
 
-        // Draw Gold Pegs around the wheel rim
+        // Gold Pegs around the outer rim
         for (let i = 0; i < sliceCount; i++) {
             const pegAngle = i * sliceAngle;
-            const px = Math.cos(pegAngle) * (radius + 2);
-            const py = Math.sin(pegAngle) * (radius + 2);
+            const px = Math.cos(pegAngle) * (radius + 4);
+            const py = Math.sin(pegAngle) * (radius + 4);
             wheelCtx.beginPath();
-            wheelCtx.arc(px, py, 4, 0, Math.PI * 2);
+            wheelCtx.arc(px, py, 4.5, 0, Math.PI * 2);
             wheelCtx.fillStyle = '#fde047';
             wheelCtx.strokeStyle = '#78350f';
-            wheelCtx.lineWidth = 1;
+            wheelCtx.lineWidth = 1.5;
             wheelCtx.fill();
             wheelCtx.stroke();
         }
@@ -481,26 +498,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const count = wheelItems.length;
         const sliceAngle = (Math.PI * 2) / count;
 
-        // Choose winner index using Cryptographic secure random
+        // Secure Random Winning Index
         const array = new Uint32Array(1);
         window.crypto.getRandomValues(array);
         const winnerIndex = array[0] % count;
 
-        // Pointer is at TOP of wheel (-Math.PI / 2 or 270 deg)
-        // Center of slice i is: (i + 0.5) * sliceAngle
-        // When rotated by wheelAngle, needle points at slice:
-        // ((2 * Math.PI - (wheelAngle % (2 * Math.PI))) - Math.PI / 2)
+        // Needle points at top: -Math.PI / 2
         const targetSliceCenter = (winnerIndex + 0.5) * sliceAngle;
         const currentNormalizedAngle = wheelAngle % (Math.PI * 2);
-        const fullSpins = Math.floor(Math.random() * 3) + 7; // 7 to 9 full spins
+        const fullSpins = Math.floor(Math.random() * 3) + 7;
         const desiredFinalAngle = (fullSpins * Math.PI * 2) + (Math.PI * 1.5 - targetSliceCenter);
         const totalAngleDelta = desiredFinalAngle - currentNormalizedAngle;
 
         const startTime = performance.now();
-        const duration = 4800; // 4.8 seconds of exciting suspense
+        const duration = 4800;
         const initialAngle = wheelAngle;
 
-        // Ease Out Cubic function
         function easeOutCubic(t) {
             return 1 - Math.pow(1 - t, 3);
         }
@@ -512,7 +525,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             wheelAngle = initialAngle + totalAngleDelta * ease;
 
-            // Needle ticking calculation
             const currentSlice = Math.floor(((Math.PI * 1.5 - (wheelAngle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2)) / sliceAngle);
             if (currentSlice !== lastTickSlice) {
                 lastTickSlice = currentSlice;
@@ -531,17 +543,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 isSpinning = false;
                 const winner = wheelItems[winnerIndex];
 
-                // Announce winner
                 showWinnerPopup(winner, (removedItem) => {
                     removeWheelItem(removedItem);
                 });
 
-                // Auto remove if option is checked
                 if (wheelAutoRemoveCheck && wheelAutoRemoveCheck.checked) {
                     removeWheelItem(winner);
                 }
 
-                addFocusHistory(`🎡 ${winner}`);
+                addFocusHistory(winner);
             }
         }
 
@@ -561,10 +571,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (btnUpdateWheel) btnUpdateWheel.addEventListener('click', parseWheelItems);
     if (wheelItemsInput) wheelItemsInput.addEventListener('input', parseWheelItems);
-    if (btnSpinWheel) btnSpinWheel.addEventListener('click', triggerWheelSpin);
+    if (btnFocusSpinWheel) btnFocusSpinWheel.addEventListener('click', triggerWheelSpin);
     if (wheelCenterBtn) wheelCenterBtn.addEventListener('click', triggerWheelSpin);
 
-    // Wheel Presets
+    // Presets
     const WHEEL_PRESETS = {
         food: [
             'กะเพราไข่ดาว', 'ส้มตำไก่ย่าง', 'ก๋วยเตี๋ยวเรือ', 'ข้าวมันไก่',
@@ -572,7 +582,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ],
         prizes: [
             'รางวัลที่ 1 (ทองคำ 1 สลึง)', 'รางวัลที่ 2 (พัดลมตั้งโต๊ะ)',
-            'รางวัลที่ 3 (แก้วเก็บความเย็น)', 'รางวัลที่ 4 (บัตรกำนัล 500 บ.)',
+            'รางวัลที่ 3 (แก้วเก็บความเย็น)', 'รางวัลที่ 4 (บัตรกำนัล 500 บาท)',
             'รางวัลที่ 5 (กาแฟฟรี 1 สัปดาห์)', 'รางวัลปลอบใจ (ขนมปี๊บ)',
             'โชคดีรอบหน้า (สู้ๆ นะ)'
         ],
@@ -600,82 +610,100 @@ document.addEventListener('DOMContentLoaded', () => {
     parseWheelItems();
 
     // =========================================================================
-    // 6. LUCKY 3-REEL SLOT MACHINE
+    // 6. NAME PICKER & TEAM SHUFFLER
     // =========================================================================
-    const slotReel1 = document.getElementById('slot-reel-1');
-    const slotReel2 = document.getElementById('slot-reel-2');
-    const slotReel3 = document.getElementById('slot-reel-3');
-    const btnPullSlot = document.getElementById('btn-pull-slot');
-    let isSlotSpinning = false;
+    const namesTextarea = document.getElementById('rand-names-input');
+    const winnersCountInput = document.getElementById('rand-winners-count');
+    const removeWinnersCheck = document.getElementById('rand-remove-winners');
+    const btnPickNames = document.getElementById('btn-pick-names');
+    const resNamesDisplay = document.getElementById('res-names-display');
 
-    function triggerSlotMachine() {
-        if (isSlotSpinning) return;
-        isSlotSpinning = true;
-        initAudio();
+    function pickWinners() {
+        const rawText = namesTextarea?.value || '';
+        const names = rawText.split('\n').map(s => s.trim()).filter(s => s.length > 0);
 
-        const slotType = document.querySelector('input[name="slot-type"]:checked')?.value || 'numbers';
-        const namesInput = document.getElementById('rand-names-input');
-        const namesList = namesInput ? namesInput.value.split('\n').map(s => s.trim()).filter(s => s.length > 0) : [];
-
-        let candidates = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-        if (slotType === 'names' && namesList.length > 0) {
-            candidates = namesList;
+        if (names.length === 0) {
+            alert('กรุณากรอกรายชื่อผู้เข้าร่วมจับฉลากอย่างน้อย 1 ชื่อ');
+            return;
         }
 
-        // Pick 3 final winners
-        const finalResults = [
-            candidates[Math.floor(Math.random() * candidates.length)],
-            candidates[Math.floor(Math.random() * candidates.length)],
-            candidates[Math.floor(Math.random() * candidates.length)]
-        ];
+        const count = Math.min(parseInt(winnersCountInput?.value) || 1, names.length);
+        const shuffled = [...names].sort(() => Math.random() - 0.5);
+        const winners = shuffled.slice(0, count);
 
-        let speed1 = 40;
-        let speed2 = 40;
-        let speed3 = 40;
+        if (resNamesDisplay) {
+            resNamesDisplay.innerHTML = `
+                <div style="font-weight: 700; font-size: 1rem; color: #10b981; margin-bottom: 0.75rem;">
+                    รายชื่อผู้โชคดีที่ได้รับรางวัล (${winners.length} คน)
+                </div>
+                <div style="display: flex; gap: 0.65rem; flex-wrap: wrap; justify-content: center; width: 100%;">
+                    ${winners.map((w, idx) => `
+                        <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; padding: 0.65rem 1.25rem; border-radius: 10px; font-weight: 700; font-size: 1.15rem; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);">
+                            ลำดับ ${idx + 1}: ${w}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
 
-        const interval1 = setInterval(() => {
-            if (slotReel1) slotReel1.textContent = candidates[Math.floor(Math.random() * candidates.length)];
-            playTickSound();
-        }, speed1);
+        if (removeWinnersCheck && removeWinnersCheck.checked && namesTextarea) {
+            const remaining = names.filter(n => !winners.includes(n));
+            namesTextarea.value = remaining.join('\n');
+        }
 
-        const interval2 = setInterval(() => {
-            if (slotReel2) slotReel2.textContent = candidates[Math.floor(Math.random() * candidates.length)];
-        }, speed2);
-
-        const interval3 = setInterval(() => {
-            if (slotReel3) slotReel3.textContent = candidates[Math.floor(Math.random() * candidates.length)];
-        }, speed3);
-
-        // Stop reel 1 at 1.4s
-        setTimeout(() => {
-            clearInterval(interval1);
-            if (slotReel1) slotReel1.textContent = finalResults[0];
-            playPopSound();
-        }, 1400);
-
-        // Stop reel 2 at 2.2s
-        setTimeout(() => {
-            clearInterval(interval2);
-            if (slotReel2) slotReel2.textContent = finalResults[1];
-            playPopSound();
-        }, 2200);
-
-        // Stop reel 3 at 3.0s & Celebrate!
-        setTimeout(() => {
-            clearInterval(interval3);
-            if (slotReel3) slotReel3.textContent = finalResults[2];
-            isSlotSpinning = false;
-
-            const resText = finalResults.join(' - ');
-            showWinnerPopup(resText);
-            addFocusHistory(`🎰 ${resText}`);
-        }, 3000);
+        showWinnerPopup(winners.join(', '));
+        winners.forEach(w => addFocusHistory(w));
     }
 
-    if (btnPullSlot) btnPullSlot.addEventListener('click', triggerSlotMachine);
+    if (btnPickNames) btnPickNames.addEventListener('click', pickWinners);
+
+    // Team Shuffler
+    const teamNamesInput = document.getElementById('team-names-input');
+    const teamCountInput = document.getElementById('team-count-input');
+    const btnShuffleTeams = document.getElementById('btn-shuffle-teams');
+    const resTeamsDisplay = document.getElementById('res-teams-display');
+
+    function shuffleTeams() {
+        const rawText = teamNamesInput?.value || '';
+        const names = rawText.split('\n').map(s => s.trim()).filter(s => s.length > 0);
+        const groupCount = parseInt(teamCountInput?.value) || 2;
+
+        if (names.length === 0) {
+            alert('กรุณากรอกรายชื่อสมาชิกที่ต้องการแบ่งกลุ่ม');
+            return;
+        }
+
+        const shuffled = [...names].sort(() => Math.random() - 0.5);
+        const teams = Array.from({ length: groupCount }, () => []);
+
+        shuffled.forEach((name, i) => {
+            teams[i % groupCount].push(name);
+        });
+
+        if (resTeamsDisplay) {
+            resTeamsDisplay.innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; width: 100%;">
+                    ${teams.map((t, idx) => `
+                        <div style="background: var(--bg-card); border: 1.5px solid var(--border-color); border-radius: 10px; padding: 1rem;">
+                            <div style="font-weight: 700; font-size: 1rem; color: var(--green-primary); margin-bottom: 0.5rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.35rem;">
+                                กลุ่มที่ ${idx + 1} (${t.length} คน)
+                            </div>
+                            <ol style="padding-left: 1.25rem; font-size: 0.9rem; line-height: 1.6; color: var(--text-primary); margin: 0;">
+                                ${t.map(m => `<li>${m}</li>`).join('')}
+                            </ol>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        triggerCelebration();
+    }
+
+    if (btnShuffleTeams) btnShuffleTeams.addEventListener('click', shuffleTeams);
 
     // =========================================================================
-    // 7. NUMBERS GENERATOR & PRESETS
+    // 7. NUMBERS GENERATOR
     // =========================================================================
     const minInput = document.getElementById('rand-num-min');
     const maxInput = document.getElementById('rand-num-max');
@@ -735,7 +763,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `).join('');
         }
 
-        addFocusHistory(`🔢 ${results.join(' • ')}`);
+        addFocusHistory(results.join(' • '));
         playPopSound();
     }
 
@@ -751,100 +779,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // =========================================================================
-    // 8. NAME PICKER & TEAM SHUFFLER
-    // =========================================================================
-    const namesTextarea = document.getElementById('rand-names-input');
-    const winnersCountInput = document.getElementById('rand-winners-count');
-    const removeWinnersCheck = document.getElementById('rand-remove-winners');
-    const btnPickNames = document.getElementById('btn-pick-names');
-    const resNamesDisplay = document.getElementById('res-names-display');
-
-    function pickWinners() {
-        const rawText = namesTextarea?.value || '';
-        const names = rawText.split('\n').map(s => s.trim()).filter(s => s.length > 0);
-
-        if (names.length === 0) {
-            alert('กรุณากรอกรายชื่อผู้เข้าร่วมจับฉลากอย่างน้อย 1 ชื่อ');
-            return;
-        }
-
-        const count = Math.min(parseInt(winnersCountInput?.value) || 1, names.length);
-        const shuffled = [...names].sort(() => Math.random() - 0.5);
-        const winners = shuffled.slice(0, count);
-
-        if (resNamesDisplay) {
-            resNamesDisplay.innerHTML = `
-                <div style="font-weight: 700; font-size: 1rem; color: #10b981; margin-bottom: 0.75rem;">
-                    🎉 รายชื่อผู้โชคดีที่ได้รับรางวัล (${winners.length} คน)
-                </div>
-                <div style="display: flex; gap: 0.65rem; flex-wrap: wrap; justify-content: center; width: 100%;">
-                    ${winners.map((w, idx) => `
-                        <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; padding: 0.65rem 1.25rem; border-radius: 10px; font-weight: 700; font-size: 1.15rem; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);">
-                            ลำดับ ${idx + 1}: ${w}
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        if (removeWinnersCheck && removeWinnersCheck.checked && namesTextarea) {
-            const remaining = names.filter(n => !winners.includes(n));
-            namesTextarea.value = remaining.join('\n');
-        }
-
-        showWinnerPopup(winners.join(', '));
-        winners.forEach(w => addFocusHistory(`🎁 ${w}`));
-    }
-
-    if (btnPickNames) btnPickNames.addEventListener('click', pickWinners);
-
-    // Team Shuffler
-    const teamNamesInput = document.getElementById('team-names-input');
-    const teamCountInput = document.getElementById('team-count-input');
-    const btnShuffleTeams = document.getElementById('btn-shuffle-teams');
-    const resTeamsDisplay = document.getElementById('res-teams-display');
-
-    function shuffleTeams() {
-        const rawText = teamNamesInput?.value || '';
-        const names = rawText.split('\n').map(s => s.trim()).filter(s => s.length > 0);
-        const groupCount = parseInt(teamCountInput?.value) || 2;
-
-        if (names.length === 0) {
-            alert('กรุณากรอกรายชื่อสมาชิกที่ต้องการแบ่งกลุ่ม');
-            return;
-        }
-
-        const shuffled = [...names].sort(() => Math.random() - 0.5);
-        const teams = Array.from({ length: groupCount }, () => []);
-
-        shuffled.forEach((name, i) => {
-            teams[i % groupCount].push(name);
-        });
-
-        if (resTeamsDisplay) {
-            resTeamsDisplay.innerHTML = `
-                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; width: 100%;">
-                    ${teams.map((t, idx) => `
-                        <div style="background: var(--bg-card); border: 1.5px solid var(--border-color); border-radius: 10px; padding: 1rem;">
-                            <div style="font-weight: 700; font-size: 1rem; color: var(--green-primary); margin-bottom: 0.5rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.35rem;">
-                                กลุ่มที่ ${idx + 1} (${t.length} คน)
-                            </div>
-                            <ol style="padding-left: 1.25rem; font-size: 0.9rem; line-height: 1.6; color: var(--text-primary); margin: 0;">
-                                ${t.map(m => `<li>${m}</li>`).join('')}
-                            </ol>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        triggerCelebration(3000);
-    }
-
-    if (btnShuffleTeams) btnShuffleTeams.addEventListener('click', shuffleTeams);
-
-    // =========================================================================
-    // 9. FULLSCREEN FOCUS PRESENTER VIEW (STAGE/PROJECTOR)
+    // 8. FULLSCREEN FOCUS PRESENTER VIEW (THE STAGE!)
     // =========================================================================
     const modal = document.getElementById('focus-presenter-modal');
     const btnOpenFocus = document.getElementById('btn-open-focus-mode');
@@ -854,6 +789,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const focusTabWheel = document.getElementById('focus-tab-wheel');
     const focusTabNames = document.getElementById('focus-tab-names');
     const focusTabNumbers = document.getElementById('focus-tab-numbers');
+
+    const focusStageWheel = document.getElementById('focus-stage-wheel');
+    const focusStageCard = document.getElementById('focus-stage-card');
 
     const focusConfigWheel = document.getElementById('focus-config-wheel');
     const focusConfigNames = document.getElementById('focus-config-names');
@@ -875,10 +813,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function openFocusMode() {
+    function openFocusMode(targetMode = 'wheel') {
         if (!modal) return;
         modal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
+        setFocusMode(targetMode);
     }
 
     function closeFocusMode() {
@@ -887,87 +826,89 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.overflow = '';
     }
 
-    if (btnOpenFocus) btnOpenFocus.addEventListener('click', openFocusMode);
+    function setFocusMode(mode) {
+        focusMode = mode;
+        [focusTabWheel, focusTabNames, focusTabNumbers].forEach(t => t?.classList.remove('active'));
+
+        if (mode === 'wheel') {
+            focusTabWheel?.classList.add('active');
+            if (focusStageWheel) focusStageWheel.style.display = 'flex';
+            if (focusStageCard) focusStageCard.style.display = 'none';
+            if (focusConfigWheel) focusConfigWheel.style.display = 'flex';
+            if (focusConfigNames) focusConfigNames.style.display = 'none';
+            if (focusConfigNumbers) focusConfigNumbers.style.display = 'none';
+            parseWheelItems();
+        } else if (mode === 'names') {
+            focusTabNames?.classList.add('active');
+            if (focusStageWheel) focusStageWheel.style.display = 'none';
+            if (focusStageCard) focusStageCard.style.display = 'block';
+            if (focusConfigWheel) focusConfigWheel.style.display = 'none';
+            if (focusConfigNames) focusConfigNames.style.display = 'flex';
+            if (focusConfigNumbers) focusConfigNumbers.style.display = 'none';
+            if (focusSubTitle) focusSubTitle.textContent = 'โหมดจับฉลากรายชื่อ (พร้อมสุ่ม)';
+            if (focusMainResult) focusMainResult.textContent = 'READY';
+
+            const rawText = namesTextarea?.value || '';
+            const names = rawText.split('\n').map(s => s.trim()).filter(s => s.length > 0);
+            const lblNames = document.getElementById('focus-lbl-names-count');
+            if (lblNames) lblNames.textContent = names.length;
+        } else {
+            focusTabNumbers?.classList.add('active');
+            if (focusStageWheel) focusStageWheel.style.display = 'none';
+            if (focusStageCard) focusStageCard.style.display = 'block';
+            if (focusConfigWheel) focusConfigWheel.style.display = 'none';
+            if (focusConfigNames) focusConfigNames.style.display = 'none';
+            if (focusConfigNumbers) focusConfigNumbers.style.display = 'flex';
+            if (focusSubTitle) focusSubTitle.textContent = 'โหมดสุ่มตัวเลข (พร้อมสุ่ม)';
+            if (focusMainResult) focusMainResult.textContent = 'READY';
+
+            const lblMin = document.getElementById('focus-lbl-min');
+            const lblMax = document.getElementById('focus-lbl-max');
+            if (lblMin) lblMin.textContent = minInput?.value || '1';
+            if (lblMax) lblMax.textContent = maxInput?.value || '100';
+        }
+    }
+
+    if (btnOpenFocus) btnOpenFocus.addEventListener('click', () => openFocusMode('wheel'));
+    if (btnLaunchWheelFocus) btnLaunchWheelFocus.addEventListener('click', () => openFocusMode('wheel'));
     if (btnCloseFocus) btnCloseFocus.addEventListener('click', closeFocusMode);
+
+    if (focusTabWheel) focusTabWheel.addEventListener('click', () => setFocusMode('wheel'));
+    if (focusTabNames) focusTabNames.addEventListener('click', () => setFocusMode('names'));
+    if (focusTabNumbers) focusTabNumbers.addEventListener('click', () => setFocusMode('numbers'));
 
     function triggerFocusRoll() {
         if (focusMode === 'wheel') {
-            if (wheelItems.length === 0) parseWheelItems();
-            const winner = wheelItems[Math.floor(Math.random() * wheelItems.length)];
-            if (focusMainResult) focusMainResult.textContent = winner;
-            if (focusSubTitle) focusSubTitle.textContent = '🎡 ผลสุ่มวงล้อผู้โชคดี!';
-            if (focusMetaText) focusMetaText.textContent = `สุ่มสำเร็จเมื่อเวลา ${new Date().toLocaleTimeString('th-TH')}`;
-            addFocusHistory(`🎡 ${winner}`);
-            triggerCelebration(5000);
+            triggerWheelSpin();
         } else if (focusMode === 'names') {
             const rawText = namesTextarea?.value || '';
             const names = rawText.split('\n').map(s => s.trim()).filter(s => s.length > 0);
             if (names.length === 0) {
-                alert('ยังไม่มีรายชื่อผู้ร่วมจับฉลาก กรุณากรอกรายชื่อก่อน');
+                alert('ยังไม่มีรายชื่อผู้ร่วมจับฉลาก กรุณาปิดหน้านี้แล้วกรอกรายชื่อก่อน');
                 return;
             }
             const winner = names[Math.floor(Math.random() * names.length)];
             if (focusMainResult) focusMainResult.textContent = winner;
-            if (focusSubTitle) focusSubTitle.textContent = '🎁 ผู้ได้รับรางวัลจับฉลาก!';
+            if (focusSubTitle) focusSubTitle.textContent = 'ผู้ได้รับรางวัลจับฉลาก!';
             if (focusMetaText) focusMetaText.textContent = `ขอแสดงความยินดีด้วยครับ! (เวลา ${new Date().toLocaleTimeString('th-TH')})`;
-            addFocusHistory(`🎁 ${winner}`);
-            triggerCelebration(5000);
+            addFocusHistory(winner);
+            triggerCelebration();
         } else {
             const min = parseInt(minInput?.value) || 1;
             const max = parseInt(maxInput?.value) || 100;
             const num = getSecureRandomInt(min, max);
             if (focusMainResult) focusMainResult.textContent = num;
-            if (focusSubTitle) focusSubTitle.textContent = `🔢 ตัวเลขนำโชค (${min} - ${max})`;
+            if (focusSubTitle) focusSubTitle.textContent = `ตัวเลขนำโชค (${min} - ${max})`;
             if (focusMetaText) focusMetaText.textContent = `สุ่มสำเร็จเมื่อเวลา ${new Date().toLocaleTimeString('th-TH')}`;
-            addFocusHistory(`🔢 ${num}`);
-            triggerCelebration(4000);
+            addFocusHistory(num);
+            triggerCelebration();
         }
     }
 
     if (btnFocusRoll) btnFocusRoll.addEventListener('click', triggerFocusRoll);
 
-    if (focusTabWheel) {
-        focusTabWheel.addEventListener('click', () => {
-            focusMode = 'wheel';
-            [focusTabWheel, focusTabNames, focusTabNumbers].forEach(t => t?.classList.remove('active'));
-            focusTabWheel.classList.add('active');
-            if (focusConfigWheel) focusConfigWheel.style.display = 'flex';
-            if (focusConfigNames) focusConfigNames.style.display = 'none';
-            if (focusConfigNumbers) focusConfigNumbers.style.display = 'none';
-            if (focusSubTitle) focusSubTitle.textContent = 'โหมดวงล้อหมุนเสี่ยงทาย (พร้อมสุ่ม)';
-            if (focusMainResult) focusMainResult.textContent = 'SPIN';
-        });
-    }
-
-    if (focusTabNames) {
-        focusTabNames.addEventListener('click', () => {
-            focusMode = 'names';
-            [focusTabWheel, focusTabNames, focusTabNumbers].forEach(t => t?.classList.remove('active'));
-            focusTabNames.classList.add('active');
-            if (focusConfigWheel) focusConfigWheel.style.display = 'none';
-            if (focusConfigNames) focusConfigNames.style.display = 'flex';
-            if (focusConfigNumbers) focusConfigNumbers.style.display = 'none';
-            if (focusSubTitle) focusSubTitle.textContent = 'โหมดจับฉลากรายชื่อ (พร้อมสุ่ม)';
-            if (focusMainResult) focusMainResult.textContent = 'LUCKY';
-        });
-    }
-
-    if (focusTabNumbers) {
-        focusTabNumbers.addEventListener('click', () => {
-            focusMode = 'numbers';
-            [focusTabWheel, focusTabNames, focusTabNumbers].forEach(t => t?.classList.remove('active'));
-            focusTabNumbers.classList.add('active');
-            if (focusConfigWheel) focusConfigWheel.style.display = 'none';
-            if (focusConfigNames) focusConfigNames.style.display = 'none';
-            if (focusConfigNumbers) focusConfigNumbers.style.display = 'flex';
-            if (focusSubTitle) focusSubTitle.textContent = 'โหมดสุ่มตัวเลข (พร้อมสุ่ม)';
-            if (focusMainResult) focusMainResult.textContent = '777';
-        });
-    }
-
     // Keyboard Shortcuts (Spacebar to spin/roll, Esc to close)
     document.addEventListener('keydown', (e) => {
-        // If typing in input or textarea, don't trigger spacebar spin
         if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
             return;
         }
@@ -977,7 +918,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 closeFocusMode();
             } else if (e.code === 'Space' || e.key === 'Enter') {
                 e.preventDefault();
-                triggerFocusRoll();
+                if (focusMode === 'wheel') {
+                    triggerWheelSpin();
+                } else {
+                    triggerFocusRoll();
+                }
             }
             return;
         }
@@ -986,19 +931,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.key === 'Escape') closeWinnerPopup();
             return;
         }
-
-        if (e.code === 'Space') {
-            const activeTabId = document.querySelector('.category-chips-bar .chip-btn.active')?.id;
-            if (activeTabId === 'tab-rand-wheel') {
-                e.preventDefault();
-                triggerWheelSpin();
-            } else if (activeTabId === 'tab-rand-slot') {
-                e.preventDefault();
-                triggerSlotMachine();
-            }
-        }
     });
 
-    // Initial roll
+    // Initial roll for number panel
     rollNumbers();
 });
