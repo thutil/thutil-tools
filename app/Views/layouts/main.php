@@ -370,8 +370,8 @@
                                     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                                 </svg>
                             </span>
-                            <span>ดูดวง & ทำนายฝัน AI (เลขเด็ด)</span>
-                            <span class="tool-nav-badge" style="color: var(--green-primary); font-weight: 700;">Groq AI</span>
+                            <span>ดูดวง & ทำนายฝัน (เลขเด็ด)</span>
+                            <span class="tool-nav-badge">ตำราโบราณ</span>
                         </a>
                     </li>
                 </ul>

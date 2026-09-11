@@ -1,6 +1,6 @@
 /**
- * Thai AI Horoscope & Dream Interpretation Tool
- * Powered by Groq LLM (Zero Storage / Ephemeral Processing Guarantee)
+ * Thai Horoscope & Dream Interpretation Tool
+ * Zero Storage / Ephemeral Processing Guarantee
  * Strictly zero emojis, SVG vector icons only.
  */
 
@@ -247,7 +247,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line>
                     <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
                 </svg>
-                <span>กำลังประมวลผลด้วย Groq AI...</span>
+                <span>กำลังประมวลผลคำทำนาย...</span>
             `;
 
             dreamResultBox.innerHTML = `
@@ -257,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         กำลังพิจารณานิมิตความฝันและถอดรหัสเลขเด็ด...
                     </div>
                     <div style="font-size: 0.85rem; color: var(--text-muted);">
-                        วิเคราะห์ตามตำราพยากรณ์ไทยโบราณผสานจิตวิทยา (ความเร็วสูงผ่าน Groq LLM)
+                        วิเคราะห์ตามตำราพยากรณ์ไทยโบราณผสานจิตวิทยา
                     </div>
                 </div>
             `;
@@ -283,9 +283,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (data.needs_key) {
                         dreamResultBox.innerHTML = `
                             <div style="padding: 1.5rem; text-align: center; background: #fffbeb; border: 1.5px solid #fef3c7; border-radius: 8px;">
-                                <div style="font-weight: 700; color: #b45309; font-size: 1rem; margin-bottom: 0.5rem;">จำเป็นต้องใช้ Groq API Key</div>
+                                <div style="font-weight: 700; color: #b45309; font-size: 1rem; margin-bottom: 0.5rem;">จำเป็นต้องระบุ API Key เพื่อเชื่อมต่อระบบ</div>
                                 <p style="font-size: 0.875rem; color: #92400e; line-height: 1.5; margin-bottom: 1rem;">
-                                    ${data.message || 'กรุณาระบุ Groq API Key ส่วนตัวเพื่อเริ่มใช้งาน (รับฟรีที่ console.groq.com)'}
+                                    ${data.message || 'กรุณาระบุ API Key ส่วนตัวเพื่อเริ่มใช้งาน (รับฟรีที่ console.groq.com)'}
                                 </p>
                                 <button type="button" class="btn-primary" onclick="document.querySelector('.tab-btn[data-tab=\\'tab-settings\\']').click()">
                                     <span>ไปที่หน้าตั้งค่า API Key</span>
@@ -295,7 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     } else {
                         dreamResultBox.innerHTML = `
                             <div style="padding: 1.5rem; color: #dc2626; background: #fef2f2; border: 1px solid #fee2e2; border-radius: 8px;">
-                                <strong>เกิดข้อผิดพลาด:</strong> ${data.message || 'ไม่สามารถติดต่อ AI ได้ในขณะนี้'}
+                                <strong>เกิดข้อผิดพลาด:</strong> ${data.message || 'ไม่สามารถประมวลผลได้ในขณะนี้'}
                             </div>
                         `;
                     }
@@ -313,10 +313,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="result-header" style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem;">
                         <span class="result-label" style="display: flex; align-items: center; gap: 0.4rem;">
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-                            <span>ผลการทำนายฝัน (Zero Storage)</span>
+                            <span>ผลการทำนายฝันตามตำราโบราณ (Zero Storage)</span>
                         </span>
                         <span class="tag-badge" style="background: var(--green-tint); color: var(--green-primary); font-size: 0.72rem;">
-                            โมเดล: ${data.data.model || 'Groq Llama 3.3'}
+                            ตำราพยากรณ์ไทย
                         </span>
                     </div>
                     ${ballsHtml}
@@ -343,7 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
                     </svg>
-                    <span>เริ่มทำนายฝัน & ถอดรหัสเลขเด็ด AI</span>
+                    <span>เริ่มทำนายฝัน & ถอดรหัสเลขเด็ด</span>
                 `;
             }
         });
@@ -397,7 +397,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="spin">
                     <line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line>
                 </svg>
-                <span>กำลังผูกดวงชะตาด้วย Groq AI...</span>
+                <span>กำลังคำนวณตำแหน่งดวงดาวและชะตาวันเกิด...</span>
             `;
 
             horoResultBox.innerHTML = `
@@ -435,9 +435,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (data.needs_key) {
                         horoResultBox.innerHTML = `
                             <div style="padding: 1.5rem; text-align: center; background: #fffbeb; border: 1.5px solid #fef3c7; border-radius: 8px;">
-                                <div style="font-weight: 700; color: #b45309; font-size: 1rem; margin-bottom: 0.5rem;">จำเป็นต้องใช้ Groq API Key</div>
+                                <div style="font-weight: 700; color: #b45309; font-size: 1rem; margin-bottom: 0.5rem;">จำเป็นต้องระบุ API Key เพื่อเชื่อมต่อระบบ</div>
                                 <p style="font-size: 0.875rem; color: #92400e; line-height: 1.5; margin-bottom: 1rem;">
-                                    ${data.message || 'กรุณาระบุ Groq API Key ส่วนตัวเพื่อเริ่มใช้งาน (รับฟรีที่ console.groq.com)'}
+                                    ${data.message || 'กรุณาระบุ API Key ส่วนตัวเพื่อเริ่มใช้งาน (รับฟรีที่ console.groq.com)'}
                                 </p>
                                 <button type="button" class="btn-primary" onclick="document.querySelector('.tab-btn[data-tab=\\'tab-settings\\']').click()">
                                     <span>ไปที่หน้าตั้งค่า API Key</span>
@@ -447,7 +447,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     } else {
                         horoResultBox.innerHTML = `
                             <div style="padding: 1.5rem; color: #dc2626; background: #fef2f2; border: 1px solid #fee2e2; border-radius: 8px;">
-                                <strong>เกิดข้อผิดพลาด:</strong> ${data.message || 'ไม่สามารถติดต่อ AI ได้ในขณะนี้'}
+                                <strong>เกิดข้อผิดพลาด:</strong> ${data.message || 'ไม่สามารถประมวลผลได้ในขณะนี้'}
                             </div>
                         `;
                     }
@@ -465,7 +465,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <span>ผลพยากรณ์ดวงชะตา (Zero Storage)</span>
                         </span>
                         <span class="tag-badge" style="background: var(--green-tint); color: var(--green-primary); font-size: 0.72rem;">
-                            โมเดล: ${data.data.model || 'Groq Llama 3.3'}
+                            โหราศาสตร์ไทย
                         </span>
                     </div>
                     <div class="reading-content" style="font-size: 0.95rem;">
@@ -492,7 +492,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <circle cx="12" cy="12" r="10"></circle>
                         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                     </svg>
-                    <span>ดูดวงชะตา & วิเคราะห์ดวงดาวด้วย AI</span>
+                    <span>ดูดวงชะตา & วิเคราะห์ดวงดาว</span>
                 `;
             }
         });

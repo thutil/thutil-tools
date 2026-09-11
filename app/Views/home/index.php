@@ -728,7 +728,7 @@
         </div>
     </a>
 
-    <!-- 22. Thai AI Horoscope & Dream Interpretation (Groq) -->
+    <!-- 22. Thai Horoscope & Dream Interpretation (Ancient Wisdom) -->
     <a href="<?= base_url('tools/horoscope') ?>" class="overview-card" data-category="lifestyle">
         <div>
             <div class="overview-card-header">
@@ -737,11 +737,11 @@
                         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                     </svg>
                 </div>
-                <span class="tag-badge" style="background: #dcfce7; color: #15803d; border-color: #86efac;">Groq AI (Zero Storage)</span>
+                <span class="tag-badge" style="background: #dcfce7; color: #15803d; border-color: #86efac;">ถอดรหัสเลขเด็ด (Zero Storage)</span>
             </div>
-            <h3 class="overview-card-title">ดูดวง & ทำนายฝัน AI (เลขเด็ด)</h3>
+            <h3 class="overview-card-title">ดูดวง & ทำนายฝัน (เลขเด็ด)</h3>
             <p class="overview-card-desc">
-                ทำนายฝันแม่นยำตามตำราโบราณ ถอดรหัสเลขเด็ด 2 ตัว 3 ตัว ดูดวงชะตาวันเกิดด้วย AI ประมวลผลชั่วคราว ไม่เก็บข้อมูล 100%
+                ทำนายฝันแม่นยำตามตำราโบราณ ถอดรหัสเลขเด็ด 2 ตัว 3 ตัว ดูดวงชะตาวันเกิด ประมวลผลชั่วคราว ไม่เก็บข้อมูล 100%
             </p>
         </div>
         <div class="overview-card-footer">

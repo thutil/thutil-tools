@@ -4,9 +4,9 @@
 <div class="workspace-header">
     <div class="workspace-title-group">
         <span class="workspace-category">ไลฟ์สไตล์ & ความเชื่อไทย</span>
-        <h1 class="workspace-title">ดูดวง & ทำนายฝัน AI (Groq LLM)</h1>
+        <h1 class="workspace-title">ดูดวง & ทำนายฝันตามตำราโบราณ (ถอดรหัสเลขเด็ด)</h1>
         <p class="workspace-subtitle">
-            ทำนายฝันแม่นยำตามตำราโบราณผสานจิตวิทยา ถอดรหัสเลขเด็ดนำโชค 2 ตัว 3 ตัว และดูดวงชะตาวันเกิดด้วย AI อัจฉริยะความเร็วสูง
+            ทำนายฝันแม่นยำตามตำราโบราณผสานจิตวิทยา ถอดรหัสเลขเด็ดนำโชค 2 ตัว 3 ตัว และดูดวงชะตาวันเกิดคำนวณตำแหน่งดวงดาว
         </p>
     </div>
 </div>
@@ -24,8 +24,8 @@
             <span class="tag-badge" style="background: #dcfce7; color: #15803d; border-color: #86efac; font-size: 0.72rem;">ไม่เก็บข้อมูล 100%</span>
         </div>
         <p style="font-size: 0.825rem; color: #15803d; line-height: 1.5; margin: 0;">
-            เรื่องราวความฝัน วันเดือนปีเกิด และคำถามของคุณจะถูกส่งไปประมวลผลผ่าน AI แบบเรียลไทม์เพื่อสร้างคำทำนายเท่านั้น 
-            <strong>ไม่มีการบันทึกลงในฐานข้อมูล เซิร์ฟเวอร์ หรือประวัติการใช้งานใดๆ ทั้งสิ้น</strong> ปลอดภัยและเคารพความเป็นส่วนตัวสูงสุด
+            เรื่องราวความฝัน วันเดือนปีเกิด และคำถามของคุณจะถูกนำไปประมวลผลแบบเรียลไทม์เพื่อสร้างคำทำนายเท่านั้น 
+            <strong>ไม่มีการบันทึกลงในฐานข้อมูล เซิร์ฟเวอร์ หรือจัดเก็บประวัติการใช้งานใดๆ ทั้งสิ้น</strong> ปลอดภัยและเคารพความเป็นส่วนตัวสูงสุด
         </p>
     </div>
 </div>
@@ -50,7 +50,7 @@
             <circle cx="12" cy="12" r="3"></circle>
             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
         </svg>
-        <span>ตั้งค่า Groq AI</span>
+        <span>ตั้งค่าระบบประมวลผล</span>
     </button>
 </div>
 
@@ -63,7 +63,7 @@
         <div class="panel-card">
             <div class="card-title-bar">
                 <h2 class="card-title">เล่าเรื่องความฝันของคุณ</h2>
-                <span class="tag-badge">AI วิเคราะห์ตำราไทย</span>
+                <span class="tag-badge">ตำราไทยโบราณ</span>
             </div>
 
             <!-- Preset Dream Buttons -->
@@ -81,7 +81,7 @@
             <div class="form-group">
                 <label class="form-label" for="dream-input">รายละเอียดความฝัน <span style="color: #dc2626;">*</span></label>
                 <textarea id="dream-input" class="form-control" rows="5" placeholder="พิมพ์เล่าความฝัน เช่น ฝันเห็นอะไร เกิดอะไรขึ้น บรรยากาศเป็นอย่างไร และคุณรู้สึกอย่างไรในฝัน..."></textarea>
-                <p class="form-hint">ยิ่งเล่ารายละเอียดชัดเจน AI ยิ่งสามารถถอดรหัสความหมายและตัวเลขได้แม่นยำขึ้น</p>
+                <p class="form-hint">ยิ่งเล่ารายละเอียดชัดเจน ระบบยิ่งสามารถถอดรหัสความหมายและตัวเลขได้แม่นยำขึ้น</p>
             </div>
 
             <div class="form-group">
@@ -102,7 +102,7 @@
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
                 </svg>
-                <span>เริ่มทำนายฝัน & ถอดรหัสเลขเด็ด AI</span>
+                <span>เริ่มทำนายฝัน & ถอดรหัสเลขเด็ด</span>
             </button>
         </div>
 
@@ -123,7 +123,7 @@
                     </svg>
                     <div style="font-weight: 600; font-size: 1rem; margin-bottom: 0.35rem;">ยังไม่มีผลการทำนาย</div>
                     <p style="font-size: 0.85rem; max-width: 320px; margin: 0 auto;">
-                        พิมพ์เรื่องราวความฝันทางด้านซ้าย แล้วกดปุ่มเพื่อเริ่มประมวลผลด้วย AI
+                        พิมพ์เรื่องราวความฝันทางด้านซ้าย แล้วกดปุ่มเพื่อเริ่มทำนาย
                     </p>
                 </div>
             </div>
@@ -176,7 +176,7 @@
                     <circle cx="12" cy="12" r="10"></circle>
                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                 </svg>
-                <span>ดูดวงชะตา & วิเคราะห์ดวงดาวด้วย AI</span>
+                <span>ดูดวงชะตา & วิเคราะห์ดวงดาว</span>
             </button>
         </div>
 
@@ -207,24 +207,23 @@
 </div>
 
 <!-- ==========================================================================
-     TAB 3: GROQ AI SETTINGS (การตั้งค่า Groq API Key)
+     TAB 3: PROCESSING ENGINE SETTINGS (การตั้งค่าระบบประมวลผล)
      ========================================================================== -->
 <div id="tab-settings" class="tab-content" style="display: none;">
     <div class="panel-card" style="max-width: 680px; margin: 0 auto;">
         <div class="card-title-bar">
-            <h2 class="card-title">ตั้งค่า Groq API Key ส่วนตัว</h2>
+            <h2 class="card-title">ตั้งค่าการเชื่อมต่อระบบประมวลผล</h2>
             <span id="key-status-badge" class="tag-badge" style="background: var(--green-tint); color: var(--green-primary); border-color: var(--green-tint-border);">
                 สถานะ: พร้อมใช้งาน
             </span>
         </div>
 
         <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.25rem;">
-            ระบบนี้ขับเคลื่อนด้วยโมเดล <strong>Llama 3.3 70B Versatile</strong> บนโครงสร้างพื้นฐานของ Groq Cloud ที่ขึ้นชื่อเรื่องความเร็วระดับเสี้ยววินาที 
-            คุณสามารถใช้ API Key ของเซิร์ฟเวอร์ หรือกรอก API Key ส่วนตัวของคุณเองเพื่อใช้งานได้ไม่จำกัด
+            ระบบนี้ทำงานผ่านการประมวลผลความเร็วสูง คุณสามารถใช้งานผ่านระบบเริ่มต้น หรือระบุ API Key ส่วนตัวของคุณเองเพื่อใช้งานได้อย่างต่อเนื่อง
         </p>
 
         <div class="form-group">
-            <label class="form-label" for="custom-groq-key">Groq API Key ส่วนตัว (ขึ้นต้นด้วย gsk_...)</label>
+            <label class="form-label" for="custom-groq-key">API Key ส่วนตัว (ขึ้นต้นด้วย gsk_...)</label>
             <input type="password" id="custom-groq-key" class="form-control" placeholder="gsk_xxxxxxxxxxxxxxxxxxxxxxxxxxxx">
             <p class="form-hint">
                 สามารถรับ API Key ฟรีได้จาก <a href="https://console.groq.com/keys" target="_blank" rel="noopener noreferrer" style="color: var(--green-primary); font-weight: 600; text-decoration: underline;">Groq Console (คลิกที่นี่)</a> สมัครและสร้างคีย์ได้ฟรี
@@ -232,7 +231,7 @@
         </div>
 
         <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.85rem 1rem; margin-bottom: 1.25rem; font-size: 0.825rem; color: var(--text-secondary); line-height: 1.5;">
-            <strong>การจัดเก็บคีย์:</strong> Groq API Key ที่คุณระบุจะถูกบันทึกลงในหน่วยความจำเครื่องของคุณ (Browser LocalStorage) เท่านั้น ไม่มีการส่งไปจัดเก็บหรือบันทึกลงฐานข้อมูลใดๆ ของเว็บไซต์ thutil
+            <strong>การจัดเก็บคีย์:</strong> API Key ที่คุณระบุจะถูกบันทึกลงในหน่วยความจำเครื่องของคุณ (Browser LocalStorage) เท่านั้น ไม่มีการส่งไปจัดเก็บหรือบันทึกลงฐานข้อมูลใดๆ ของเว็บไซต์ thutil
         </div>
 
         <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
@@ -250,5 +249,5 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
-<script src="<?= base_url('assets/js/modules/horoscope.js?v=' . (file_exists(FCPATH . 'assets/js/modules/horoscope.js') ? filemtime(FCPATH . 'assets/js/modules/horoscope.js') : '1.0')) ?>"></script>
+<script src="<?= base_url('assets/js/modules/horoscope.js?v=' . (file_exists(FCPATH . 'assets/js/modules/horoscope.js') ? filemtime(FCPATH . 'assets/js/modules/horoscope.js') : '1.1')) ?>"></script>
 <?= $this->endSection() ?>

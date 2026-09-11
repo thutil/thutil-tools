@@ -279,15 +279,15 @@ class Tools extends BaseController
     }
 
     /**
-     * AI Horoscope & Dream Interpretation (ดูดวง & ทำนายฝัน AI ด้วย Groq - Zero Storage)
+     * Horoscope & Dream Interpretation (ดูดวง & ทำนายฝันตามตำราโบราณ - Zero Storage)
      */
     public function horoscope(): string
     {
         return view('tools/horoscope', [
-            'title' => 'ดูดวง ทำนายฝัน AI พร้อมเลขเด็ดแม่นๆ พยากรณ์ชะตาชีวิต (Zero Storage) - thutil',
-            'metaDesc' => 'ทำนายฝันแม่นยำ วิเคราะห์นัยยะความฝัน ถอดรหัสเลขเด็ดนำโชค 2 ตัว 3 ตัว พร้อมดูดวงชะตาวันเกิดด้วย AI (Groq LLM) ประมวลผลชั่วคราว ไม่เก็บข้อมูลบนเซิร์ฟเวอร์ ฟรี 100%',
-            'keywords' => 'ทำนายฝัน, ดูดวง, ทำนายฝันเลขเด็ด, ฝันเห็นงู, ฝันเห็นช้าง, ดูดวงวันเกิด, ดูดวงไพ่ยิปซี, ดูดวงความรัก, ดูดวงการงาน, groq ai ทำนายฝัน, เลขมงคล',
-            'toolName' => 'ดูดวง & ทำนายฝัน AI (Groq)',
+            'title' => 'ดูดวง ทำนายฝันตามตำราโบราณ ถอดรหัสเลขเด็ดแม่นๆ พยากรณ์ชะตาชีวิต (Zero Storage) - thutil',
+            'metaDesc' => 'ทำนายฝันแม่นยำ วิเคราะห์นัยยะความฝัน ถอดรหัสเลขเด็ดนำโชค 2 ตัว 3 ตัว พร้อมดูดวงชะตาวันเกิดตามตำราโบราณผสานจิตวิทยา ประมวลผลชั่วคราว ไม่เก็บข้อมูลบนเซิร์ฟเวอร์ ฟรี 100%',
+            'keywords' => 'ทำนายฝัน, ดูดวง, ทำนายฝันเลขเด็ด, ฝันเห็นงู, ฝันเห็นช้าง, ดูดวงวันเกิด, ดูดวงไพ่ยิปซี, ดูดวงความรัก, ดูดวงการงาน, เลขมงคล',
+            'toolName' => 'ดูดวง & ทำนายฝัน (เลขเด็ด)',
             'activeNav' => 'horoscope'
         ]);
     }
@@ -406,13 +406,13 @@ class Tools extends BaseController
         if ($curlError) {
             return $this->response->setStatusCode(500)->setJSON([
                 'success' => false,
-                'message' => 'เกิดข้อผิดพลาดในการเชื่อมต่อ Groq AI: ' . $curlError
+                'message' => 'เกิดข้อผิดพลาดในการเชื่อมต่อระบบประมวลผล: ' . $curlError
             ]);
         }
 
         $resData = json_decode($response, true);
         if ($httpCode !== 200) {
-            $errMsg = $resData['error']['message'] ?? 'เกิดข้อผิดพลาดจาก Groq AI (HTTP ' . $httpCode . ')';
+            $errMsg = $resData['error']['message'] ?? 'เกิดข้อผิดพลาดจากระบบประมวลผล (HTTP ' . $httpCode . ')';
             return $this->response->setStatusCode($httpCode >= 400 && $httpCode < 600 ? $httpCode : 500)->setJSON([
                 'success' => false,
                 'message' => $errMsg
@@ -427,7 +427,7 @@ class Tools extends BaseController
             'data' => [
                 'type' => $type,
                 'reading' => $replyContent,
-                'model' => 'Llama 3.3 70B (Groq)'
+                'system' => 'ตำราพยากรณ์ไทยโบราณ'
             ]
         ]);
     }
