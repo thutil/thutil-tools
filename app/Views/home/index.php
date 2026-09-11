@@ -164,7 +164,7 @@
 
 <!-- Category Chips Bar (Quick Filters) -->
 <div class="category-chips-bar">
-    <button class="chip-btn active" data-category="all">ทั้งหมด (23 เครื่องมือ)</button>
+    <button class="chip-btn active" data-category="all">ทั้งหมด (24 เครื่องมือ)</button>
     <button class="chip-btn" data-category="finance">การเงิน & ภาษี</button>
     <button class="chip-btn" data-category="utility">สาธารณูปโภค & สุขภาพ</button>
     <button class="chip-btn" data-category="lifestyle">ไลฟ์สไตล์ & ปฏิทิน</button>
@@ -172,7 +172,7 @@
     <button class="chip-btn" data-category="identity">นักพัฒนา</button>
 </div>
 
-<!-- Tools Overview Grid (23 Tools) -->
+<!-- Tools Overview Grid (24 Tools) -->
 <div class="overview-grid">
     <!-- 1. Tax Calculator (Top Search) -->
     <a href="<?= base_url('tools/tax') ?>" class="overview-card" data-category="finance">
@@ -728,7 +728,32 @@
         </div>
     </a>
 
-    <!-- 22. Thai Barcode EAN-13 -->
+    <!-- 22. Thai AI Horoscope & Dream Interpretation (Groq) -->
+    <a href="<?= base_url('tools/horoscope') ?>" class="overview-card" data-category="lifestyle">
+        <div>
+            <div class="overview-card-header">
+                <div class="overview-icon-box" style="background: var(--green-tint); color: var(--green-primary);">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </div>
+                <span class="tag-badge" style="background: #dcfce7; color: #15803d; border-color: #86efac;">Groq AI (Zero Storage)</span>
+            </div>
+            <h3 class="overview-card-title">ดูดวง & ทำนายฝัน AI (เลขเด็ด)</h3>
+            <p class="overview-card-desc">
+                ทำนายฝันแม่นยำตามตำราโบราณ ถอดรหัสเลขเด็ด 2 ตัว 3 ตัว ดูดวงชะตาวันเกิดด้วย AI ประมวลผลชั่วคราว ไม่เก็บข้อมูล 100%
+            </p>
+        </div>
+        <div class="overview-card-footer">
+            <span>เข้าสู่เครื่องมือ</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+        </div>
+    </a>
+
+    <!-- 23. Thai Barcode EAN-13 -->
     <a href="<?= base_url('tools/barcode') ?>" class="overview-card" data-category="identity">
         <div>
             <div class="overview-card-header">

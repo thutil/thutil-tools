@@ -29,6 +29,9 @@ $routes->group('tools', static function ($routes) {
     $routes->get('age', 'Tools::age');
     $routes->get('era', 'Tools::era');
     $routes->get('holidays', 'Tools::holidays');
+    $routes->get('horoscope', 'Tools::horoscope');
+    $routes->get('dream', 'Tools::horoscope');
+    $routes->post('api/horoscope', 'Tools::apiHoroscope');
 
     // 3. GIS & Administrative (ที่ดิน & พิกัด)
     $routes->get('gis', 'Tools::gis');
@@ -56,5 +59,7 @@ $routes->get('vat-tax', 'Tools::vatTax');
 $routes->get('age', 'Tools::age');
 $routes->get('compound-interest', 'Tools::compoundInterest');
 $routes->get('salary', 'Tools::salary');
+$routes->get('horoscope', 'Tools::horoscope');
+$routes->get('dream', 'Tools::horoscope');
 
 

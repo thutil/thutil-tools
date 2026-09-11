@@ -1807,3 +1807,35 @@ tbody td {
     line-height: 1.45;
 }
 
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+[data-theme="dark"] .privacy-guarantee-banner {
+    background: rgba(22, 101, 52, 0.2) !important;
+    border-color: rgba(34, 197, 94, 0.3) !important;
+}
+
+[data-theme="dark"] .privacy-guarantee-banner div > div {
+    color: #86efac !important;
+}
+
+[data-theme="dark"] .privacy-guarantee-banner p {
+    color: #bbf7d0 !important;
+}
+
+.lucky-ball {
+    user-select: none;
+    font-family: var(--font-mono, monospace);
+}
+
+.lucky-pill {
+    user-select: none;
+    font-family: var(--font-mono, monospace);
+}
+

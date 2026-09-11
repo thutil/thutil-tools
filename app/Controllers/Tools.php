@@ -277,4 +277,158 @@ class Tools extends BaseController
             'activeNav' => 'image-converter'
         ]);
     }
+
+    /**
+     * AI Horoscope & Dream Interpretation (ดูดวง & ทำนายฝัน AI ด้วย Groq - Zero Storage)
+     */
+    public function horoscope(): string
+    {
+        return view('tools/horoscope', [
+            'title' => 'ดูดวง ทำนายฝัน AI พร้อมเลขเด็ดแม่นๆ พยากรณ์ชะตาชีวิต (Zero Storage) - thutil',
+            'metaDesc' => 'ทำนายฝันแม่นยำ วิเคราะห์นัยยะความฝัน ถอดรหัสเลขเด็ดนำโชค 2 ตัว 3 ตัว พร้อมดูดวงชะตาวันเกิดด้วย AI (Groq LLM) ประมวลผลชั่วคราว ไม่เก็บข้อมูลบนเซิร์ฟเวอร์ ฟรี 100%',
+            'keywords' => 'ทำนายฝัน, ดูดวง, ทำนายฝันเลขเด็ด, ฝันเห็นงู, ฝันเห็นช้าง, ดูดวงวันเกิด, ดูดวงไพ่ยิปซี, ดูดวงความรัก, ดูดวงการงาน, groq ai ทำนายฝัน, เลขมงคล',
+            'toolName' => 'ดูดวง & ทำนายฝัน AI (Groq)',
+            'activeNav' => 'horoscope'
+        ]);
+    }
+
+    /**
+     * API Proxy for Groq AI Inference (Zero Retention / Ephemeral Only)
+     */
+    public function apiHoroscope()
+    {
+        // Enforce POST
+        if ($this->request->getMethod() !== 'POST') {
+            return $this->response->setStatusCode(405)->setJSON([
+                'success' => false,
+                'message' => 'Method Not Allowed. Only POST is accepted.'
+            ]);
+        }
+
+        $json = $this->request->getJSON(true) ?? $this->request->getPost();
+        $type = trim($json['type'] ?? 'dream');
+        $userInput = trim($json['userInput'] ?? '');
+        $dreamDay = trim($json['dreamDay'] ?? 'ไม่ระบุ');
+        $birthDate = trim($json['birthDate'] ?? '');
+        $birthTime = trim($json['birthTime'] ?? '');
+        $targetTopic = trim($json['targetTopic'] ?? 'ภาพรวมชีวิต');
+        $customApiKey = trim($json['customApiKey'] ?? '');
+
+        if (empty($userInput) && empty($birthDate)) {
+            return $this->response->setStatusCode(400)->setJSON([
+                'success' => false,
+                'message' => 'กรุณาระบุเรื่องราวความฝันหรือวันเดือนปีเกิดเพื่อเริ่มทำนาย'
+            ]);
+        }
+
+        // Determine Groq API Key
+        $apiKey = !empty($customApiKey) ? $customApiKey : (getenv('GROQ_API_KEY') ?: ($_ENV['GROQ_API_KEY'] ?? ''));
+
+        if (empty($apiKey)) {
+            return $this->response->setStatusCode(401)->setJSON([
+                'success' => false,
+                'needs_key' => true,
+                'message' => 'ไม่พบ Groq API Key บนเซิร์ฟเวอร์ กรุณาระบุ Groq API Key ของคุณ (รับฟรีได้ที่ console.groq.com) เพื่อเริ่มใช้งาน คีย์จะถูกเก็บในเครื่องของคุณเท่านั้น'
+            ]);
+        }
+
+        // Prepare Prompts based on Type
+        $systemPrompt = "คุณคือ 'อาจารย์ญาณทิพย์' ผู้เชี่ยวชาญด้านโหราศาสตร์ไทยโบราณ ศาสตร์การพยากรณ์ดวงชะตา และการทำนายฝันตามตำราไทยผสานจิตวิทยาสมัยใหม่\n"
+            . "หลักการตอบ:\n"
+            . "1. ใช้ภาษาไทยที่สุภาพ นุ่มนวล ให้กำลังใจ สร้างสติ ปลอดอคติ และน่าเชื่อถือ\n"
+            . "2. ห้ามใช้ Emoji โดยเด็ดขาด (เพราะระบบ UI ออกแบบเป็นทางการ)\n"
+            . "3. จัดโครงสร้างคำตอบด้วย Markdown อย่างเป็นระเบียบ หัวข้อชัดเจน\n"
+            . "4. หากเป็นทำนายฝัน ต้องระบุ 'เลขเด็ดนำโชค' แยกเป็นเลข 2 ตัว และ 3 ตัวตามตำรา พร้อมคำแนะนำเสริมมงคล\n"
+            . "5. หากเป็นดูดวงวันเกิด ต้องวิเคราะห์จุดเด่น ข้อควรระวัง แนวทางแก้ไข และทิศ/สี/ตัวเลขมงคล";
+
+        if ($type === 'dream') {
+            $userPrompt = "ช่วยทำนายความฝันนี้ตามตำราโบราณไทย:\n"
+                . "- เรื่องราวความฝัน: {$userInput}\n"
+                . "- วันที่ฝัน: {$dreamDay}\n\n"
+                . "โปรดตอบโครงสร้างดังนี้:\n"
+                . "### 1. นิมิตความหมายและลางบอกเหตุ (วิเคราะห์ความฝัน)\n"
+                . "(อธิบายความหมาย เหตุการณ์ หรือการเปลี่ยนแปลงที่อาจเกิดขึ้น)\n\n"
+                . "### 2. นัยยะทางจิตวิทยาและข้อคิดเตือนใจ\n"
+                . "(สะท้อนสภาวะอารมณ์ จิตใต้สำนึก และข้อคิดในการใช้ชีวิตอย่างมีสติ)\n\n"
+                . "### 3. ถอดรหัสเลขเด็ดนำโชค\n"
+                . "- เลขท้าย 2 ตัว: (ระบุ 2-3 ชุด เช่น 48, 89)\n"
+                . "- เลขท้าย 3 ตัว: (ระบุ 2 ชุด เช่น 348, 789)\n\n"
+                . "### 4. เคล็ดลับเสริมมงคล / ทำบุญแก้เคล็ด\n"
+                . "(แนะนำการทำบุญ สวดมนต์ หรือการปล่อยวางเพื่อความสบายใจ)";
+        } else {
+            $userPrompt = "ช่วยดูดวงชะตาและวิเคราะห์แนวทางชีวิตตามหลักโหราศาสตร์ไทย:\n"
+                . "- วันเดือนปีเกิด: {$birthDate}\n"
+                . "- เวลาตกฟาก (ถ้ามี): " . (!empty($birthTime) ? $birthTime : 'ไม่ทราบแน่ชัด') . "\n"
+                . "- เรื่องที่ต้องการปรึกษา: {$targetTopic}\n"
+                . "- คำถามเพิ่มเติม: {$userInput}\n\n"
+                . "โปรดตอบโครงสร้างดังนี้:\n"
+                . "### 1. ภาพรวมพื้นดวงชะตาและดาวประจำตัว\n"
+                . "(วิเคราะห์จุดแข็ง อุปนิสัย และเกณฑ์วาสนา)\n\n"
+                . "### 2. วิเคราะห์เฉพาะเรื่อง ({$targetTopic})\n"
+                . "(ตอบคำถามและแนวโน้มโอกาส อุปสรรค และแนวทางรับมือ)\n\n"
+                . "### 3. สิ่งมงคลประจำดวงชะตา\n"
+                . "- สีมงคลส่งเสริม:\n"
+                . "- เลขมงคลหนุนนำ:\n"
+                . "- ทิศมงคล:\n\n"
+                . "### 4. ข้อควรระวังและวิธีเสริมสิริมงคล\n"
+                . "(ข้อเตือนสติและการทำบุญเสริมดวง)";
+        }
+
+        // Call Groq API via cURL
+        $groqUrl = 'https://api.groq.com/openai/v1/chat/completions';
+        $payload = [
+            'model' => 'llama-3.3-70b-versatile',
+            'messages' => [
+                ['role' => 'system', 'content' => $systemPrompt],
+                ['role' => 'user', 'content' => $userPrompt]
+            ],
+            'temperature' => 0.7,
+            'max_tokens' => 1500
+        ];
+
+        $ch = curl_init($groqUrl);
+        curl_setopt_array($ch, [
+            CURLOPT_POST => true,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+                'Authorization: Bearer ' . $apiKey
+            ],
+            CURLOPT_POSTFIELDS => json_encode($payload),
+            CURLOPT_TIMEOUT => 30
+        ]);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
+        curl_close($ch);
+
+        if ($curlError) {
+            return $this->response->setStatusCode(500)->setJSON([
+                'success' => false,
+                'message' => 'เกิดข้อผิดพลาดในการเชื่อมต่อ Groq AI: ' . $curlError
+            ]);
+        }
+
+        $resData = json_decode($response, true);
+        if ($httpCode !== 200) {
+            $errMsg = $resData['error']['message'] ?? 'เกิดข้อผิดพลาดจาก Groq AI (HTTP ' . $httpCode . ')';
+            return $this->response->setStatusCode($httpCode >= 400 && $httpCode < 600 ? $httpCode : 500)->setJSON([
+                'success' => false,
+                'message' => $errMsg
+            ]);
+        }
+
+        $replyContent = $resData['choices'][0]['message']['content'] ?? 'ไม่สามารถดึงคำทำนายได้';
+
+        // Zero Storage: do not save to DB or logs, return directly
+        return $this->response->setJSON([
+            'success' => true,
+            'data' => [
+                'type' => $type,
+                'reading' => $replyContent,
+                'model' => 'Llama 3.3 70B (Groq)'
+            ]
+        ]);
+    }
 }
