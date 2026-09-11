@@ -1259,3 +1259,277 @@ tbody td {
     font-weight: 700;
 }
 
+/* ==========================================================================
+   GAMIFIED RANDOMIZER (LUCKY WHEEL, SLOT MACHINE & FIREWORKS)
+   ========================================================================== */
+.celebration-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 100000;
+    display: none;
+}
+
+.wheel-card {
+    background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+    border: 2px solid #334155;
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    color: #ffffff;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.wheel-stage {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1.25rem 0 1rem;
+    width: 100%;
+}
+
+.wheel-pointer {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 42px;
+    height: 52px;
+    z-index: 25;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6));
+    pointer-events: none;
+    transform-origin: 50% 15%;
+}
+
+.wheel-pointer.tick {
+    transform: translateX(-50%) rotate(-14deg);
+}
+
+.wheel-canvas {
+    border-radius: 50%;
+    box-shadow: 0 0 0 8px #f59e0b, 0 0 0 14px #b45309, 0 12px 36px rgba(0,0,0,0.6);
+    background: #0f172a;
+    display: block;
+    cursor: grab;
+}
+
+.wheel-canvas:active {
+    cursor: grabbing;
+}
+
+.wheel-center-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 78px;
+    height: 78px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #fde047 0%, #f59e0b 50%, #b45309 100%);
+    border: 4px solid #ffffff;
+    color: #78350f;
+    font-size: 1.2rem;
+    font-weight: 800;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+    user-select: none;
+    z-index: 20;
+    letter-spacing: -0.02em;
+}
+
+.wheel-center-btn:hover {
+    transform: translate(-50%, -50%) scale(1.05);
+}
+
+.wheel-center-btn:active {
+    transform: translate(-50%, -50%) scale(0.95);
+}
+
+.btn-wheel-spin {
+    background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+    color: #ffffff;
+    border: 2px solid #fde68a;
+    border-radius: var(--radius-md);
+    font-size: 1.2rem;
+    font-weight: 800;
+    padding: 0.85rem 2.25rem;
+    box-shadow: 0 6px 20px rgba(217, 119, 6, 0.4);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 1rem;
+}
+
+.btn-wheel-spin:hover {
+    background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
+}
+
+/* Slot Machine Styles */
+.slot-machine-card {
+    background: radial-gradient(circle at center, #1e1b4b 0%, #0f0b1f 100%);
+    border: 2px solid #6366f1;
+    border-radius: var(--radius-lg);
+    padding: 2rem 1.5rem;
+    color: #ffffff;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+    text-align: center;
+}
+
+.slot-frame {
+    background: #030014;
+    border: 4px solid #f59e0b;
+    box-shadow: inset 0 0 25px rgba(0,0,0,0.9), 0 0 25px rgba(245, 158, 11, 0.3);
+    border-radius: 18px;
+    padding: 1.25rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.85rem;
+    margin: 1.5rem auto;
+    max-width: 580px;
+    overflow: hidden;
+}
+
+.slot-reel {
+    flex: 1;
+    height: 125px;
+    background: linear-gradient(180deg, #18181b 0%, #27272a 50%, #18181b 100%);
+    border: 2px solid #52525b;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(1.8rem, 3.5vw, 2.75rem);
+    font-weight: 900;
+    color: #facc15;
+    box-shadow: inset 0 4px 12px rgba(0,0,0,0.8);
+    text-shadow: 0 2px 12px rgba(250, 204, 21, 0.6);
+    overflow: hidden;
+    user-select: none;
+    padding: 0 0.5rem;
+    word-break: break-word;
+}
+
+.btn-slot-pull {
+    background: linear-gradient(180deg, #ec4899 0%, #be185d 100%);
+    color: #ffffff;
+    border: 2px solid #fbcfe8;
+    border-radius: var(--radius-md);
+    font-size: 1.25rem;
+    font-weight: 800;
+    padding: 0.9rem 2.5rem;
+    box-shadow: 0 6px 20px rgba(190, 24, 93, 0.4);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.btn-slot-pull:hover {
+    background: linear-gradient(180deg, #f472b6 0%, #db2777 100%);
+}
+
+/* Winner Celebration Modal */
+.winner-popup-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    z-index: 100001;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+}
+
+.winner-popup-card {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border: 3px solid #fbbf24;
+    box-shadow: 0 0 60px rgba(251, 191, 36, 0.5), 0 20px 45px rgba(0,0,0,0.8);
+    border-radius: 24px;
+    padding: 2.5rem 2rem;
+    max-width: 520px;
+    width: 100%;
+    text-align: center;
+    color: #ffffff;
+    position: relative;
+    animation: winnerPop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes winnerPop {
+    from { transform: scale(0.65); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.winner-badge-crown {
+    font-size: 3.5rem;
+    margin-bottom: 0.5rem;
+    display: inline-block;
+    filter: drop-shadow(0 4px 10px rgba(251, 191, 36, 0.5));
+}
+
+.winner-title-label {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fde047;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+.winner-name-display {
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    font-weight: 900;
+    color: #ffffff;
+    text-shadow: 0 0 20px rgba(251, 191, 36, 0.8);
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    word-break: break-word;
+}
+
+.winner-actions {
+    display: flex;
+    gap: 0.85rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-winner-primary {
+    background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+    color: #ffffff;
+    border: 2px solid #6ee7b7;
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 0.65rem 1.4rem;
+    cursor: pointer;
+}
+
+.btn-winner-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: #f1f5f9;
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.65rem 1.4rem;
+    cursor: pointer;
+}
+
+.btn-winner-secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
