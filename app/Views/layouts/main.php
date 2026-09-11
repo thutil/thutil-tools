@@ -443,7 +443,20 @@
 
             <!-- Sidebar Footer -->
             <div class="sidebar-footer">
-                <span>Zero Storage (Privacy-first)</span>
+                <div style="display: flex; align-items: center; gap: 0.35rem;">
+                    <button id="btn-sidebar-collapse" class="btn-icon" style="width: 28px; height: 28px;" title="หุบแถบเมนูด้านข้าง (ขยายจอทำงาน)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="11 17 6 12 11 7"></polyline>
+                            <polyline points="18 17 13 12 18 7"></polyline>
+                        </svg>
+                    </button>
+                    <button id="btn-sidebar-wide" class="btn-icon" style="width: 28px; height: 28px;" title="ขยายแถบเมนูด้านข้างกว้างขึ้น">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="13 17 18 12 13 7"></polyline>
+                            <polyline points="6 17 11 12 6 7"></polyline>
+                        </svg>
+                    </button>
+                </div>
                 <span class="tag-badge">23 เครื่องมือ</span>
             </div>
         </aside>

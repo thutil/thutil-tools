@@ -179,6 +179,165 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (btnShuffleTeams) btnShuffleTeams.addEventListener('click', shuffleTeams);
 
+    // --- Focus Presenter Mode ---
+    const modal = document.getElementById('focus-presenter-modal');
+    const btnOpenFocus = document.getElementById('btn-open-focus-mode');
+    const btnCloseFocus = document.getElementById('btn-close-focus');
+    const btnFocusRoll = document.getElementById('btn-focus-roll');
+    const focusMainResult = document.getElementById('focus-main-result');
+    const focusSubTitle = document.getElementById('focus-sub-title');
+    const focusMetaText = document.getElementById('focus-meta-text');
+    const focusTabNumbers = document.getElementById('focus-tab-numbers');
+    const focusTabNames = document.getElementById('focus-tab-names');
+    const focusConfigNumbers = document.getElementById('focus-config-numbers');
+    const focusConfigNames = document.getElementById('focus-config-names');
+    const focusHistoryItems = document.getElementById('focus-history-items');
+    const focusLblMin = document.getElementById('focus-lbl-min');
+    const focusLblMax = document.getElementById('focus-lbl-max');
+    const focusLblCount = document.getElementById('focus-lbl-count');
+    const focusLblNamesCount = document.getElementById('focus-lbl-names-count');
+
+    let focusMode = 'numbers';
+    const focusHistory = [];
+
+    function updateFocusConfigLabels() {
+        if (focusLblMin) focusLblMin.textContent = minInput?.value || '1';
+        if (focusLblMax) focusLblMax.textContent = maxInput?.value || '100';
+        if (focusLblCount) focusLblCount.textContent = countInput?.value || '1';
+        
+        const rawText = namesTextarea?.value || '';
+        const names = rawText.split('\n').map(s => s.trim()).filter(s => s.length > 0);
+        if (focusLblNamesCount) focusLblNamesCount.textContent = names.length;
+    }
+
+    function openFocusMode() {
+        if (!modal) return;
+        modal.style.display = 'flex';
+        updateFocusConfigLabels();
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeFocusMode() {
+        if (!modal) return;
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+
+    function addFocusHistory(itemText) {
+        focusHistory.unshift(itemText);
+        if (focusHistory.length > 12) focusHistory.pop();
+        if (focusHistoryItems) {
+            focusHistoryItems.innerHTML = focusHistory.map(h => `<span class="focus-history-pill">${h}</span>`).join('');
+        }
+    }
+
+    function triggerFocusRoll() {
+        if (focusMode === 'numbers') {
+            const min = parseInt(minInput?.value) || 1;
+            const max = parseInt(maxInput?.value) || 100;
+            const count = parseInt(countInput?.value) || 1;
+            const isUnique = uniqueCheck ? uniqueCheck.checked : true;
+            const isSort = sortCheck ? sortCheck.checked : false;
+
+            if (min > max) {
+                alert('ค่าต่ำสุดต้องไม่มากกว่าค่าสูงสุด');
+                return;
+            }
+
+            const results = [];
+            const seen = new Set();
+            const totalPossible = max - min + 1;
+            const actualCount = isUnique ? Math.min(count, totalPossible) : count;
+
+            while (results.length < actualCount) {
+                const num = getSecureRandomInt(min, max);
+                if (isUnique) {
+                    if (!seen.has(num)) {
+                        seen.add(num);
+                        results.push(num);
+                    }
+                } else {
+                    results.push(num);
+                }
+            }
+
+            if (isSort) results.sort((a, b) => a - b);
+
+            const resultText = results.join(' • ');
+            if (focusMainResult) {
+                focusMainResult.textContent = resultText;
+            }
+            if (focusSubTitle) focusSubTitle.textContent = `ตัวเลขที่สุ่มได้ (ช่วง ${min} - ${max})`;
+            if (focusMetaText) focusMetaText.textContent = `สุ่มสำเร็จเมื่อเวลา ${new Date().toLocaleTimeString('th-TH')}`;
+            addFocusHistory(resultText);
+
+            renderNumbers(results);
+        } else {
+            const rawText = namesTextarea?.value || '';
+            const names = rawText.split('\n').map(s => s.trim()).filter(s => s.length > 0);
+
+            if (names.length === 0) {
+                alert('ยังไม่มีรายชื่อผู้เข้าร่วมจับฉลาก กรุณาปิดหน้านี้แล้วกรอกรายชื่อก่อน');
+                return;
+            }
+
+            const count = Math.min(parseInt(winnersCountInput?.value) || 1, names.length);
+            const shuffled = [...names].sort(() => Math.random() - 0.5);
+            const winners = shuffled.slice(0, count);
+
+            const resultText = winners.join(', ');
+            if (focusMainResult) {
+                focusMainResult.textContent = resultText;
+            }
+            if (focusSubTitle) focusSubTitle.textContent = `🎉 ผู้ได้รับรางวัล (${winners.length} คน)`;
+            if (focusMetaText) focusMetaText.textContent = `ขอแสดงความยินดีด้วยครับ! (เวลา ${new Date().toLocaleTimeString('th-TH')})`;
+            winners.forEach(w => addFocusHistory(w));
+
+            pickWinners();
+            updateFocusConfigLabels();
+        }
+    }
+
+    if (btnOpenFocus) btnOpenFocus.addEventListener('click', openFocusMode);
+    if (btnCloseFocus) btnCloseFocus.addEventListener('click', closeFocusMode);
+    if (btnFocusRoll) btnFocusRoll.addEventListener('click', triggerFocusRoll);
+
+    if (focusTabNumbers) {
+        focusTabNumbers.addEventListener('click', () => {
+            focusMode = 'numbers';
+            focusTabNumbers.classList.add('active');
+            if (focusTabNames) focusTabNames.classList.remove('active');
+            if (focusConfigNumbers) focusConfigNumbers.style.display = 'flex';
+            if (focusConfigNames) focusConfigNames.style.display = 'none';
+            if (focusSubTitle) focusSubTitle.textContent = 'โหมดสุ่มตัวเลข (พร้อมสุ่ม)';
+            if (focusMainResult) focusMainResult.textContent = 'READY';
+        });
+    }
+
+    if (focusTabNames) {
+        focusTabNames.addEventListener('click', () => {
+            focusMode = 'names';
+            focusTabNames.classList.add('active');
+            if (focusTabNumbers) focusTabNumbers.classList.remove('active');
+            if (focusConfigNumbers) focusConfigNumbers.style.display = 'none';
+            if (focusConfigNames) focusConfigNames.style.display = 'flex';
+            if (focusSubTitle) focusSubTitle.textContent = 'โหมดสุ่มรายชื่อผู้โชคดี (พร้อมสุ่ม)';
+            if (focusMainResult) focusMainResult.textContent = 'READY';
+            updateFocusConfigLabels();
+        });
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (modal && modal.style.display === 'flex') {
+            if (e.key === 'Escape') {
+                closeFocusMode();
+            } else if (e.code === 'Space' || e.key === 'Enter') {
+                e.preventDefault();
+                triggerFocusRoll();
+            }
+        }
+    });
+
     // Initial roll
     rollNumbers();
 });

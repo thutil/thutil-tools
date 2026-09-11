@@ -47,13 +47,21 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
-<div class="workspace-header">
-    <div class="workspace-title-group">
+<div class="workspace-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+    <div class="workspace-title-group" style="flex: 1; min-width: 280px;">
         <span class="workspace-category">เครื่องมือประจำวัน & กิจกรรม</span>
         <h1 class="workspace-title">สุ่มตัวเลข สุ่มรายชื่อผู้โชคดี & จับฉลากออนไลน์</h1>
         <p class="workspace-subtitle">
             สุ่มตัวเลขกำหนดช่วง สุ่มเลข 2 ตัว 3 ตัว สุ่มจับฉลากของขวัญปีใหม่ สุ่มรายชื่อผู้โชคดี และสุ่มแบ่งกลุ่มทีม ยุติธรรม 100% ด้วย Cryptographic Random
         </p>
+    </div>
+    <div>
+        <button type="button" id="btn-open-focus-mode" class="btn-primary" style="padding: 0.55rem 1.15rem; font-size: 0.9rem; gap: 0.5rem; white-space: nowrap;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+            </svg>
+            <span>โหมด Focus นำเสนอขึ้นจอ (Presenter View)</span>
+        </button>
     </div>
 </div>
 
@@ -217,6 +225,77 @@
             <div id="res-teams-display" style="min-height: 200px; padding: 1rem; background: var(--bg-primary); border: 1px dashed var(--border-color); border-radius: 12px;">
                 <div style="text-align: center; color: var(--text-muted); font-size: 0.9rem; padding-top: 3rem;">
                     กดปุ่ม "สุ่มแบ่งกลุ่มทีมทันที" เพื่อกระจายสมาชิก
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Fullscreen Focus Presenter Modal -->
+<div id="focus-presenter-modal" class="focus-presenter-modal" style="display: none;">
+    <div class="focus-presenter-header">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <span class="logo-badge" style="width: 32px; height: 32px; font-size: 0.95rem;">th</span>
+            <div style="text-align: left;">
+                <div style="font-weight: 800; font-size: 1.1rem; color: var(--text-primary); line-height: 1.2;">
+                    โหมด Focus นำเสนอขึ้นจอ (Presenter View)
+                </div>
+                <div style="font-size: 0.78rem; color: var(--text-muted);">
+                    เหมาะสำหรับฉายโปรเจกเตอร์ จัดกิจกรรม สุ่มรางวัลบนเวที หรือเล่นในห้องเรียน
+                </div>
+            </div>
+        </div>
+        
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <div class="category-chips-bar" style="margin-bottom: 0;">
+                <button type="button" id="focus-tab-numbers" class="chip-btn active" style="padding: 0.35rem 0.85rem; font-size: 0.85rem;">สุ่มตัวเลข</button>
+                <button type="button" id="focus-tab-names" class="chip-btn" style="padding: 0.35rem 0.85rem; font-size: 0.85rem;">สุ่มรายชื่อจับฉลาก</button>
+            </div>
+
+            <button type="button" id="btn-close-focus" class="btn-outline" style="padding: 0.35rem 0.85rem; font-size: 0.85rem; min-height: 38px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+                <span>ออก (Esc)</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="focus-presenter-body">
+        <div class="focus-hero-display">
+            <div id="focus-sub-title" class="focus-hero-label">ผลการสุ่มล่าสุด</div>
+            <div id="focus-main-result" class="focus-hero-number">
+                READY
+            </div>
+            <div id="focus-meta-text" class="focus-hero-meta">
+                กดปุ่มด้านล่าง หรือกด Spacebar / Enter บนแป้นพิมพ์เพื่อสุ่ม
+            </div>
+        </div>
+
+        <div class="focus-action-bar">
+            <button type="button" id="btn-focus-roll" class="btn-primary btn-focus-trigger">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                <span>กดสุ่มทันที (Spacebar / Enter)</span>
+            </button>
+        </div>
+
+        <div class="focus-bottom-panel">
+            <div class="focus-quick-config" id="focus-config-numbers">
+                <span>การตั้งค่า: ช่วง Min <strong id="focus-lbl-min">1</strong> ถึง Max <strong id="focus-lbl-max">100</strong> (สุ่ม <span id="focus-lbl-count">1</span> ตัว)</span>
+                <span class="tag-badge">กด Spacebar สุ่มด่วน</span>
+            </div>
+            <div class="focus-quick-config" id="focus-config-names" style="display: none;">
+                <span>การตั้งค่า: รายชื่อผู้ร่วมลุ้นรางวัล <strong id="focus-lbl-names-count">0</strong> คน</span>
+                <span class="tag-badge">กด Spacebar สุ่มด่วน</span>
+            </div>
+
+            <div class="focus-history-strip">
+                <span style="font-weight: 700; font-size: 0.85rem; color: var(--text-primary); white-space: nowrap;">ประวัติที่สุ่มได้:</span>
+                <div id="focus-history-items" class="focus-history-items">
+                    <span style="color: var(--text-muted); font-size: 0.85rem;">ยังไม่มีประวัติการสุ่ม</span>
                 </div>
             </div>
         </div>

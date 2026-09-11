@@ -19,22 +19,51 @@ function toggleTheme() {
     }
 })();
 
-// Mobile Drawer & Filter Handling
+// Desktop & Mobile Sidebar Management
 document.addEventListener('DOMContentLoaded', () => {
     const sidebar = document.getElementById('app-sidebar');
     const backdrop = document.getElementById('sidebar-backdrop');
     const toggleBtn = document.getElementById('sidebar-toggle-btn');
     const searchInput = document.getElementById('global-search-input');
 
+    // Restore desktop collapsed state
+    const savedCollapsed = localStorage.getItem('thutil_sidebar_collapsed');
+    if (savedCollapsed === '1' && window.innerWidth > 960) {
+        document.body.classList.add('sidebar-collapsed');
+    }
+
     function toggleSidebar(forceState) {
         if (!sidebar) return;
-        const willOpen = forceState !== undefined ? forceState : !sidebar.classList.contains('open');
-        sidebar.classList.toggle('open', willOpen);
-        if (backdrop) backdrop.classList.toggle('active', willOpen);
+        if (window.innerWidth > 960) {
+            // Desktop: Toggle full collapse/expand
+            const isNowCollapsed = document.body.classList.toggle('sidebar-collapsed');
+            localStorage.setItem('thutil_sidebar_collapsed', isNowCollapsed ? '1' : '0');
+        } else {
+            // Mobile: Drawer open/close
+            const willOpen = forceState !== undefined ? forceState : !sidebar.classList.contains('open');
+            sidebar.classList.toggle('open', willOpen);
+            if (backdrop) backdrop.classList.toggle('active', willOpen);
+        }
     }
 
     if (toggleBtn) {
         toggleBtn.addEventListener('click', () => toggleSidebar());
+    }
+
+    // Sidebar footer wide button
+    const btnWide = document.getElementById('btn-sidebar-wide');
+    if (btnWide) {
+        btnWide.addEventListener('click', () => {
+            document.body.classList.toggle('sidebar-wide');
+        });
+    }
+
+    const btnCollapse = document.getElementById('btn-sidebar-collapse');
+    if (btnCollapse) {
+        btnCollapse.addEventListener('click', () => {
+            document.body.classList.add('sidebar-collapsed');
+            localStorage.setItem('thutil_sidebar_collapsed', '1');
+        });
     }
 
     if (backdrop) {
