@@ -18,6 +18,7 @@ $routes->group('tools', static function ($routes) {
 
     // 2. High-Search Daily Life, Utilities & Health (ค่าไฟ, BMI, เบอร์มงคล, แป้นพิมพ์, สุ่ม, รูปภาพ)
     $routes->get('electricity', 'Tools::electricity');
+    $routes->get('bmi-mr', 'Tools::bmiBmr');
     $routes->get('bmi-bmr', 'Tools::bmiBmr');
     $routes->get('random', 'Tools::random');
     $routes->get('image-converter', 'Tools::imageConverter');
@@ -38,4 +39,21 @@ $routes->group('tools', static function ($routes) {
     $routes->get('barcode', 'Tools::barcode');
     $routes->get('mock-thai', 'Tools::mockThai');
 });
+
+// Direct top-level shortcuts for SEO & quick access
+$routes->get('tax', 'Tools::tax');
+$routes->get('car-loan', 'Tools::carLoan');
+$routes->get('home-loan', 'Tools::homeLoan');
+$routes->get('gis', 'Tools::gis');
+$routes->get('electricity', 'Tools::electricity');
+$routes->get('bmi-bmr', 'Tools::bmiBmr');
+$routes->get('promptpay', 'Tools::qrcode');
+$routes->get('qrcode', 'Tools::qrcode');
+$routes->get('thai-id', 'Tools::thaiId');
+$routes->get('bahttext', 'Tools::bahttext');
+$routes->get('vat-tax', 'Tools::vatTax');
+$routes->get('age', 'Tools::age');
+$routes->get('compound-interest', 'Tools::compoundInterest');
+$routes->get('salary', 'Tools::salary');
+
 

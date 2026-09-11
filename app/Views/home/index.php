@@ -31,17 +31,111 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
-<div class="workspace-header">
-    <div class="workspace-title-group">
-        <span class="workspace-category">
-            <span style="width: 6px; height: 6px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
-            ชุดเครื่องมือสำหรับคนไทย 100% Client-Side
-        </span>
-        <h1 class="workspace-title">ศูนย์รวมเครื่องมือ Utility สำหรับคนไทย</h1>
-        <p class="workspace-subtitle">
-            เรียบง่าย ทันสมัย รวดเร็ว ปลอดภัย ไร้การบันทึกข้อมูลส่วนบุคคล (Zero Storage) ตอบโจทย์ทุกการคำนวณที่คนไทยต้องใช้จริงในชีวิตประจำวัน
-        </p>
+<!-- E-Filing Inspired Portal Hero -->
+<section class="efiling-hero">
+    <div class="efiling-hero-badge">
+        <span style="width: 7px; height: 7px; border-radius: 50%; background: var(--green-primary); display: inline-block;"></span>
+        บริการคำนวณออนไลน์ 100% Client-Side
     </div>
+    <h1 class="efiling-hero-title">ศูนย์รวมเครื่องมือคำนวณและบริการออนไลน์สำหรับคนไทย</h1>
+    <p class="efiling-hero-desc">
+        ออกแบบด้วยโทนสีเขียวสะอาดตา เรียบง่าย ใช้งานสะดวกรวดเร็วตามแบบฉบับบริการสาธารณะยุคใหม่ ปลอดภัยสูงสุดด้วยนโยบาย Zero Storage ไร้การบันทึกข้อมูลส่วนบุคคลลงเซิร์ฟเวอร์
+    </p>
+    <div class="efiling-hero-actions">
+        <a href="<?= base_url('tools/tax') ?>" class="btn-primary btn-lg">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="12" y1="18" x2="12" y2="12"></line>
+                <line x1="9" y1="15" x2="15" y2="15"></line>
+            </svg>
+            <span>คำนวณภาษีเงินได้ 2567-2568</span>
+        </a>
+        <a href="<?= base_url('tools/car-loan') ?>" class="btn-outline btn-lg">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path>
+                <circle cx="7" cy="17" r="2"></circle>
+                <path d="M9 17h6"></path>
+                <circle cx="17" cy="17" r="2"></circle>
+            </svg>
+            <span>คำนวณค่างวดรถยนต์ (VAT 7%)</span>
+        </a>
+    </div>
+    <div class="efiling-hero-meta">
+        <span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            ความปลอดภัยสูง ไร้การบันทึกข้อมูลส่วนบุคคล (Zero Storage)
+        </span>
+        <span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 14 14"></polyline>
+            </svg>
+            คำนวณทันทีบนเครื่อง ไม่ส่งข้อมูลออกนอกเบราว์เซอร์
+        </span>
+        <span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            23 เครื่องมือครอบคลุมทุกด้าน
+        </span>
+    </div>
+</section>
+
+<!-- Featured Spotlight Cards (RD Prep & RD Payroll Reference Style) -->
+<div class="spotlight-grid">
+    <div class="spotlight-card">
+        <div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+                <h2 class="spotlight-card-title">โปรแกรมคำนวณภาษีเงินได้บุคคลธรรมดา ภ.ง.ด. 90/91</h2>
+                <span class="tag-badge">ปีภาษี 2567/2568</span>
+            </div>
+            <p class="spotlight-card-desc">
+                รองรับการคำนวณเงินได้พึงประเมิน หักค่าใช้จ่าย 50% สูงสุด 1 แสนบาท สิทธิลดหย่อนกองทุน ThaiESG 300,000 บาท ดอกเบี้ยบ้าน ประกันสังคม ประกันชีวิต และสรุปยอดขอคืนภาษีอัตโนมัติ
+            </p>
+        </div>
+        <div class="spotlight-card-footer">
+            <span style="font-size: 0.8rem; color: var(--text-muted);">อัตราก้าวหน้า 0-35% ตามเกณฑ์สรรพากร</span>
+            <a href="<?= base_url('tools/tax') ?>" class="btn-primary" style="padding: 0.45rem 1rem; font-size: 0.85rem;">
+                คำนวณภาษีทันที
+            </a>
+        </div>
+    </div>
+
+    <div class="spotlight-card">
+        <div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+                <h2 class="spotlight-card-title">คำนวณค่างวดรถยนต์ & ผ่อนบ้านโปะบ้านลดดอกเบี้ย</h2>
+                <span class="tag-badge">สินเชื่อยอดนิยม</span>
+            </div>
+            <p class="spotlight-card-desc">
+                คำนวณค่างวดเช่าซื้อรถยนต์ ดอกเบี้ยคงที่ (Flat Rate) บวก VAT 7% พร้อมตารางผ่อนบ้านแบบลดต้นลดดอก คำนวณเงินโปะที่ช่วยประหยัดดอกเบี้ยได้หลักแสนบาทและหมดหนี้เร็วขึ้นหลายปี
+            </p>
+        </div>
+        <div class="spotlight-card-footer">
+            <span style="font-size: 0.8rem; color: var(--text-muted);">สูตรไฟแนนซ์ & ธนาคารมาตรฐาน</span>
+            <div style="display: flex; gap: 0.5rem;">
+                <a href="<?= base_url('tools/car-loan') ?>" class="btn-primary" style="padding: 0.45rem 0.85rem; font-size: 0.85rem;">ค่างวดรถ</a>
+                <a href="<?= base_url('tools/home-loan') ?>" class="btn-outline" style="padding: 0.45rem 0.85rem; font-size: 0.85rem;">ผ่อน/โปะบ้าน</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recommended Services Section Header (แนะนำบริการ) -->
+<div class="service-section-banner">
+    <h2 class="service-section-title">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--green-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="7" height="7" x="3" y="3" rx="1"></rect>
+            <rect width="7" height="7" x="14" y="3" rx="1"></rect>
+            <rect width="7" height="7" x="14" y="14" rx="1"></rect>
+            <rect width="7" height="7" x="3" y="14" rx="1"></rect>
+        </svg>
+        แนะนำบริการ & ศูนย์รวมเครื่องมือทั้งหมด
+    </h2>
+    <div class="service-section-ribbon"></div>
 </div>
 
 <!-- Category Chips Bar (Quick Filters) -->

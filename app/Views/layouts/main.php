@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="th" data-theme="dark">
+<html lang="th" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -67,6 +67,13 @@
                 <span>thutil</span>
                 <span class="tag-badge">Open Source</span>
             </a>
+            
+            <nav class="header-nav">
+                <a href="<?= base_url('/') ?>" class="nav-link <?= ($activeNav ?? '') === 'home' ? 'active' : '' ?>">หน้าหลัก</a>
+                <a href="<?= base_url('tools/tax') ?>" class="nav-link <?= ($activeNav ?? '') === 'tax' ? 'active' : '' ?>">คำนวณภาษี</a>
+                <a href="<?= base_url('tools/car-loan') ?>" class="nav-link <?= ($activeNav ?? '') === 'car_loan' ? 'active' : '' ?>">ค่างวดรถ</a>
+                <a href="<?= base_url('tools/gis') ?>" class="nav-link <?= ($activeNav ?? '') === 'gis' ? 'active' : '' ?>">GIS ที่ดินไทย</a>
+            </nav>
         </div>
 
         <div class="header-center">
@@ -441,6 +448,8 @@
             </div>
         </aside>
 
+        <!-- Main Workspace View -->
+        <main class="app-content">
             <?= $this->renderSection('content') ?>
 
             <!-- Formal Footer for Gen Y & Public -->
