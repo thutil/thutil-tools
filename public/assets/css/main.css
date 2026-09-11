@@ -587,20 +587,6 @@ body.sidebar-wide .app-sidebar {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
 }
 
-.efiling-hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: var(--green-badge-text);
-    background: var(--green-tint);
-    border: 1px solid var(--green-tint-border);
-    padding: 0.25rem 0.75rem;
-    border-radius: var(--radius-xs);
-    margin-bottom: 1rem;
-}
-
 .efiling-hero-title {
     font-size: 2.15rem;
     font-weight: 800;

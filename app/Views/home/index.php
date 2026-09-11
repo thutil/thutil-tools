@@ -33,10 +33,6 @@
 <?= $this->section('content') ?>
 <!-- E-Filing Inspired Portal Hero -->
 <section class="efiling-hero">
-    <div class="efiling-hero-badge">
-        <span style="width: 7px; height: 7px; border-radius: 50%; background: var(--green-primary); display: inline-block;"></span>
-        บริการคำนวณออนไลน์ 100% Client-Side
-    </div>
     <h1 class="efiling-hero-title">ศูนย์รวมเครื่องมือคำนวณและบริการออนไลน์สำหรับคนไทย</h1>
     <p class="efiling-hero-desc">
         ออกแบบด้วยโทนสีเขียวสะอาดตา เรียบง่าย ใช้งานสะดวกรวดเร็วตามแบบฉบับบริการสาธารณะยุคใหม่ ปลอดภัยสูงสุดด้วยนโยบาย Zero Storage ไร้การบันทึกข้อมูลส่วนบุคคลลงเซิร์ฟเวอร์
