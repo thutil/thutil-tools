@@ -4,6 +4,7 @@ use CodeIgniter\Router\RouteCollection;
 
 /** @var RouteCollection $routes */
 $routes->get('/', 'Home::index');
+$routes->get('terms', 'Home::terms');
 
 // High-Demand Thai Utility Tools Routes
 $routes->group('tools', static function ($routes) {

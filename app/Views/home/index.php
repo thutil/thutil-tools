@@ -141,7 +141,7 @@
     <button class="chip-btn" data-category="utility">สาธารณูปโภค & สุขภาพ</button>
     <button class="chip-btn" data-category="lifestyle">ไลฟ์สไตล์ & ปฏิทิน</button>
     <button class="chip-btn" data-category="gis">ภูมิสารสนเทศ & แผนที่</button>
-    <button class="chip-btn" data-category="identity">รหัส & นักพัฒนา</button>
+    <button class="chip-btn" data-category="identity">นักพัฒนา</button>
 </div>
 
 <!-- Tools Overview Grid (23 Tools) -->
