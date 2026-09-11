@@ -30,7 +30,7 @@
     </div>
 </div>
 
-<!-- Segmented Control Tabs -->
+<!-- Segmented Control Tabs (2 Tabs Only) -->
 <div class="tab-bar" style="margin-bottom: 1.5rem;">
     <button type="button" class="tab-btn active" data-tab="tab-dream">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -44,13 +44,6 @@
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
         </svg>
         <span>ดูดวงวันเกิด & ชะตาชีวิต</span>
-    </button>
-    <button type="button" class="tab-btn" data-tab="tab-settings">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="3"></circle>
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-        </svg>
-        <span>ตั้งค่าระบบประมวลผล</span>
     </button>
 </div>
 
@@ -96,6 +89,11 @@
                     <option value="คืนวันศุกร์ (ผลตกแก่สัตว์เลี้ยง ข้าวของ ทรัพย์สิน)">คืนวันศุกร์ (ผลตกแก่สัตว์เลี้ยง/ทรัพย์สิน)</option>
                     <option value="คืนวันเสาร์ (ผลตกแก่ตนเองโดยตรง)">คืนวันเสาร์ (ผลตกแก่ตนเองโดยตรง)</option>
                 </select>
+            </div>
+
+            <!-- reCAPTCHA v2 Widget -->
+            <div class="form-group" style="margin-bottom: 1.25rem;">
+                <div id="recaptcha-dream" class="g-recaptcha" data-sitekey="<?= esc($recaptchaSiteKey) ?>"></div>
             </div>
 
             <button type="button" id="btn-submit-dream" class="btn-primary" style="width: 100%; font-size: 1rem; padding: 0.75rem;">
@@ -171,6 +169,11 @@
                 <p class="form-hint">ระบุคำถามให้ชัดเจนเพื่อให้คำพยากรณ์ตรงจุดที่สุด</p>
             </div>
 
+            <!-- reCAPTCHA v2 Widget -->
+            <div class="form-group" style="margin-bottom: 1.25rem;">
+                <div id="recaptcha-horo" class="g-recaptcha" data-sitekey="<?= esc($recaptchaSiteKey) ?>"></div>
+            </div>
+
             <button type="button" id="btn-submit-horo" class="btn-primary" style="width: 100%; font-size: 1rem; padding: 0.75rem;">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="10"></circle>
@@ -205,49 +208,10 @@
         </div>
     </div>
 </div>
-
-<!-- ==========================================================================
-     TAB 3: PROCESSING ENGINE SETTINGS (การตั้งค่าระบบประมวลผล)
-     ========================================================================== -->
-<div id="tab-settings" class="tab-content" style="display: none;">
-    <div class="panel-card" style="max-width: 680px; margin: 0 auto;">
-        <div class="card-title-bar">
-            <h2 class="card-title">ตั้งค่าการเชื่อมต่อระบบประมวลผล</h2>
-            <span id="key-status-badge" class="tag-badge" style="background: var(--green-tint); color: var(--green-primary); border-color: var(--green-tint-border);">
-                สถานะ: พร้อมใช้งาน
-            </span>
-        </div>
-
-        <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.25rem;">
-            ระบบนี้ทำงานผ่านการประมวลผลความเร็วสูง คุณสามารถใช้งานผ่านระบบเริ่มต้น หรือระบุ API Key ส่วนตัวของคุณเองเพื่อใช้งานได้อย่างต่อเนื่อง
-        </p>
-
-        <div class="form-group">
-            <label class="form-label" for="custom-groq-key">API Key ส่วนตัว (ขึ้นต้นด้วย gsk_...)</label>
-            <input type="password" id="custom-groq-key" class="form-control" placeholder="gsk_xxxxxxxxxxxxxxxxxxxxxxxxxxxx">
-            <p class="form-hint">
-                สามารถรับ API Key ฟรีได้จาก <a href="https://console.groq.com/keys" target="_blank" rel="noopener noreferrer" style="color: var(--green-primary); font-weight: 600; text-decoration: underline;">Groq Console (คลิกที่นี่)</a> สมัครและสร้างคีย์ได้ฟรี
-            </p>
-        </div>
-
-        <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.85rem 1rem; margin-bottom: 1.25rem; font-size: 0.825rem; color: var(--text-secondary); line-height: 1.5;">
-            <strong>การจัดเก็บคีย์:</strong> API Key ที่คุณระบุจะถูกบันทึกลงในหน่วยความจำเครื่องของคุณ (Browser LocalStorage) เท่านั้น ไม่มีการส่งไปจัดเก็บหรือบันทึกลงฐานข้อมูลใดๆ ของเว็บไซต์ thutil
-        </div>
-
-        <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
-            <button type="button" id="btn-save-key" class="btn-primary">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-                <span>บันทึกคีย์ลงเบราว์เซอร์</span>
-            </button>
-            <button type="button" id="btn-clear-key" class="btn-outline">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                <span>ล้างคีย์ที่บันทึกไว้</span>
-            </button>
-        </div>
-    </div>
-</div>
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
-<script src="<?= base_url('assets/js/modules/horoscope.js?v=' . (file_exists(FCPATH . 'assets/js/modules/horoscope.js') ? filemtime(FCPATH . 'assets/js/modules/horoscope.js') : '1.1')) ?>"></script>
+<!-- Google reCAPTCHA API -->
+<script src="https://www.google.com/recaptcha/api.js?hl=th" async defer></script>
+<script src="<?= base_url('assets/js/modules/horoscope.js?v=' . (file_exists(FCPATH . 'assets/js/modules/horoscope.js') ? filemtime(FCPATH . 'assets/js/modules/horoscope.js') : '1.2')) ?>"></script>
 <?= $this->endSection() ?>

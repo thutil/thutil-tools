@@ -5,9 +5,7 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-    const STORAGE_KEY = 'thutil_groq_custom_key';
-
-    // 1. Tab Switching
+    // 1. Tab Switching (2 Tabs)
     const tabBtns = document.querySelectorAll('.tab-bar .tab-btn[data-tab]');
     const tabPanes = document.querySelectorAll('.tab-content');
 
@@ -23,74 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 2. Groq Custom API Key Management
-    const customKeyInput = document.getElementById('custom-groq-key');
-    const keyStatusBadge = document.getElementById('key-status-badge');
-    const btnSaveKey = document.getElementById('btn-save-key');
-    const btnClearKey = document.getElementById('btn-clear-key');
-
-    function updateKeyStatus() {
-        const savedKey = localStorage.getItem(STORAGE_KEY);
-        if (customKeyInput) {
-            customKeyInput.value = savedKey ? savedKey : '';
-        }
-        if (keyStatusBadge) {
-            if (savedKey) {
-                keyStatusBadge.textContent = 'สถานะ: ใช้ Custom Key ในเครื่อง';
-                keyStatusBadge.style.background = 'var(--green-tint)';
-                keyStatusBadge.style.color = 'var(--green-primary)';
-                keyStatusBadge.style.borderColor = 'var(--green-tint-border)';
-            } else {
-                keyStatusBadge.textContent = 'สถานะ: เซิร์ฟเวอร์เริ่มต้น / ไม่ได้บันทึกคีย์';
-                keyStatusBadge.style.background = 'var(--bg-subtle)';
-                keyStatusBadge.style.color = 'var(--text-muted)';
-                keyStatusBadge.style.borderColor = 'var(--border-color)';
-            }
-        }
-    }
-
-    if (btnSaveKey) {
-        btnSaveKey.addEventListener('click', () => {
-            const val = customKeyInput ? customKeyInput.value.trim() : '';
-            if (!val) {
-                if (window.ThutilToast) {
-                    window.ThutilToast.show('กรุณากรอก Groq API Key ก่อนกดบันทึก', 'info');
-                } else {
-                    alert('กรุณากรอก Groq API Key ก่อนกดบันทึก');
-                }
-                return;
-            }
-            if (!val.startsWith('gsk_')) {
-                if (window.ThutilToast) {
-                    window.ThutilToast.show('Groq API Key ปกติจะขึ้นต้นด้วย gsk_', 'info');
-                }
-            }
-            localStorage.setItem(STORAGE_KEY, val);
-            updateKeyStatus();
-            if (window.ThutilToast) {
-                window.ThutilToast.show('บันทึก Groq API Key ลงในเบราว์เซอร์เรียบร้อยแล้ว (Zero Storage)', 'success');
-            } else {
-                alert('บันทึก Groq API Key ลงในเบราว์เซอร์เรียบร้อยแล้ว');
-            }
-        });
-    }
-
-    if (btnClearKey) {
-        btnClearKey.addEventListener('click', () => {
-            localStorage.removeItem(STORAGE_KEY);
-            if (customKeyInput) customKeyInput.value = '';
-            updateKeyStatus();
-            if (window.ThutilToast) {
-                window.ThutilToast.show('ลบ Groq API Key ออกจากเบราว์เซอร์แล้ว', 'info');
-            } else {
-                alert('ลบ Groq API Key ออกจากเบราว์เซอร์แล้ว');
-            }
-        });
-    }
-
-    updateKeyStatus();
-
-    // 3. Preset Dream Buttons
+    // 2. Preset Dream Buttons
     const presetBtns = document.querySelectorAll('.btn-preset-dream');
     const dreamInput = document.getElementById('dream-input');
     const dreamDaySelect = document.getElementById('dream-day');
@@ -112,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 4. Markdown Formatter Helper
+    // 3. Markdown Formatter Helper
     function formatMarkdown(text) {
         if (!text) return '';
         let escaped = text
@@ -153,13 +84,11 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         if (!text) return numbers;
 
-        // Match 2-digit patterns (e.g. 48, 89)
         const twoMatches = text.match(/\b\d{2}\b/g);
         if (twoMatches) {
             numbers.twoDigits = [...new Set(twoMatches)].slice(0, 5);
         }
 
-        // Match 3-digit patterns (e.g. 348, 789)
         const threeMatches = text.match(/\b\d{3}\b/g);
         if (threeMatches) {
             numbers.threeDigits = [...new Set(threeMatches)].slice(0, 4);
@@ -216,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return html;
     }
 
-    // 5. Submit Dream Interpretation
+    // 4. Submit Dream Interpretation
     const btnSubmitDream = document.getElementById('btn-submit-dream');
     const dreamResultBox = document.getElementById('dream-result-box');
     const btnCopyDream = document.getElementById('btn-copy-dream-result');
@@ -235,8 +164,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            // Get reCAPTCHA response if widget is present
+            let recaptchaToken = '';
+            if (typeof grecaptcha !== 'undefined') {
+                try {
+                    recaptchaToken = grecaptcha.getResponse();
+                } catch (e) {
+                    recaptchaToken = '';
+                }
+            }
+
             const dayVal = dreamDaySelect ? dreamDaySelect.value : 'ไม่ระบุ';
-            const customKey = localStorage.getItem(STORAGE_KEY) || '';
 
             // Loading state
             btnSubmitDream.disabled = true;
@@ -273,31 +211,20 @@ document.addEventListener('DOMContentLoaded', () => {
                         type: 'dream',
                         userInput: text,
                         dreamDay: dayVal,
-                        customApiKey: customKey
+                        recaptchaToken: recaptchaToken
                     })
                 });
 
                 const data = await response.json();
 
                 if (!response.ok || !data.success) {
-                    if (data.needs_key) {
-                        dreamResultBox.innerHTML = `
-                            <div style="padding: 1.5rem; text-align: center; background: #fffbeb; border: 1.5px solid #fef3c7; border-radius: 8px;">
-                                <div style="font-weight: 700; color: #b45309; font-size: 1rem; margin-bottom: 0.5rem;">จำเป็นต้องระบุ API Key เพื่อเชื่อมต่อระบบ</div>
-                                <p style="font-size: 0.875rem; color: #92400e; line-height: 1.5; margin-bottom: 1rem;">
-                                    ${data.message || 'กรุณาระบุ API Key ส่วนตัวเพื่อเริ่มใช้งาน (รับฟรีที่ console.groq.com)'}
-                                </p>
-                                <button type="button" class="btn-primary" onclick="document.querySelector('.tab-btn[data-tab=\\'tab-settings\\']').click()">
-                                    <span>ไปที่หน้าตั้งค่า API Key</span>
-                                </button>
-                            </div>
-                        `;
-                    } else {
-                        dreamResultBox.innerHTML = `
-                            <div style="padding: 1.5rem; color: #dc2626; background: #fef2f2; border: 1px solid #fee2e2; border-radius: 8px;">
-                                <strong>เกิดข้อผิดพลาด:</strong> ${data.message || 'ไม่สามารถประมวลผลได้ในขณะนี้'}
-                            </div>
-                        `;
+                    dreamResultBox.innerHTML = `
+                        <div style="padding: 1.5rem; color: #dc2626; background: #fef2f2; border: 1px solid #fee2e2; border-radius: 8px;">
+                            <strong>เกิดข้อผิดพลาด:</strong> ${data.message || 'ไม่สามารถประมวลผลได้ในขณะนี้'}
+                        </div>
+                    `;
+                    if (typeof grecaptcha !== 'undefined') {
+                        try { grecaptcha.reset(); } catch (e) {}
                     }
                     return;
                 }
@@ -329,6 +256,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (window.ThutilToast) {
                     window.ThutilToast.show('ถอดรหัสความฝันและเลขเด็ดเรียบร้อยแล้ว (ไม่บันทึกข้อมูล)', 'success');
+                }
+
+                if (typeof grecaptcha !== 'undefined') {
+                    try { grecaptcha.reset(); } catch (e) {}
                 }
 
             } catch (err) {
@@ -364,7 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 6. Submit Birthday Horoscope
+    // 5. Submit Birthday Horoscope
     const btnSubmitHoro = document.getElementById('btn-submit-horo');
     const horoResultBox = document.getElementById('horo-result-box');
     const horoBirthDate = document.getElementById('horo-birth-date');
@@ -387,10 +318,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            let recaptchaToken = '';
+            if (typeof grecaptcha !== 'undefined') {
+                try {
+                    recaptchaToken = grecaptcha.getResponse();
+                } catch (e) {
+                    recaptchaToken = '';
+                }
+            }
+
             const btime = horoBirthTime ? horoBirthTime.value : '';
             const topic = horoTopic ? horoTopic.value : 'ภาพรวมชีวิต';
             const question = horoQuestion ? horoQuestion.value.trim() : '';
-            const customKey = localStorage.getItem(STORAGE_KEY) || '';
 
             btnSubmitHoro.disabled = true;
             btnSubmitHoro.innerHTML = `
@@ -425,31 +364,20 @@ document.addEventListener('DOMContentLoaded', () => {
                         birthTime: btime,
                         targetTopic: topic,
                         userInput: question,
-                        customApiKey: customKey
+                        recaptchaToken: recaptchaToken
                     })
                 });
 
                 const data = await response.json();
 
                 if (!response.ok || !data.success) {
-                    if (data.needs_key) {
-                        horoResultBox.innerHTML = `
-                            <div style="padding: 1.5rem; text-align: center; background: #fffbeb; border: 1.5px solid #fef3c7; border-radius: 8px;">
-                                <div style="font-weight: 700; color: #b45309; font-size: 1rem; margin-bottom: 0.5rem;">จำเป็นต้องระบุ API Key เพื่อเชื่อมต่อระบบ</div>
-                                <p style="font-size: 0.875rem; color: #92400e; line-height: 1.5; margin-bottom: 1rem;">
-                                    ${data.message || 'กรุณาระบุ API Key ส่วนตัวเพื่อเริ่มใช้งาน (รับฟรีที่ console.groq.com)'}
-                                </p>
-                                <button type="button" class="btn-primary" onclick="document.querySelector('.tab-btn[data-tab=\\'tab-settings\\']').click()">
-                                    <span>ไปที่หน้าตั้งค่า API Key</span>
-                                </button>
-                            </div>
-                        `;
-                    } else {
-                        horoResultBox.innerHTML = `
-                            <div style="padding: 1.5rem; color: #dc2626; background: #fef2f2; border: 1px solid #fee2e2; border-radius: 8px;">
-                                <strong>เกิดข้อผิดพลาด:</strong> ${data.message || 'ไม่สามารถประมวลผลได้ในขณะนี้'}
-                            </div>
-                        `;
+                    horoResultBox.innerHTML = `
+                        <div style="padding: 1.5rem; color: #dc2626; background: #fef2f2; border: 1px solid #fee2e2; border-radius: 8px;">
+                            <strong>เกิดข้อผิดพลาด:</strong> ${data.message || 'ไม่สามารถประมวลผลได้ในขณะนี้'}
+                        </div>
+                    `;
+                    if (typeof grecaptcha !== 'undefined') {
+                        try { grecaptcha.reset(); } catch (e) {}
                     }
                     return;
                 }
@@ -477,6 +405,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (window.ThutilToast) {
                     window.ThutilToast.show('พยากรณ์ดวงชะตาเรียบร้อยแล้ว (ไม่บันทึกข้อมูล)', 'success');
+                }
+
+                if (typeof grecaptcha !== 'undefined') {
+                    try { grecaptcha.reset(); } catch (e) {}
                 }
 
             } catch (err) {

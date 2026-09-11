@@ -283,17 +283,20 @@ class Tools extends BaseController
      */
     public function horoscope(): string
     {
+        $siteKey = getenv('RECAPTCHA_SITE_KEY') ?: ($_ENV['RECAPTCHA_SITE_KEY'] ?? '');
+
         return view('tools/horoscope', [
             'title' => 'ดูดวง ทำนายฝันตามตำราโบราณ ถอดรหัสเลขเด็ดแม่นๆ พยากรณ์ชะตาชีวิต (Zero Storage) - thutil',
             'metaDesc' => 'ทำนายฝันแม่นยำ วิเคราะห์นัยยะความฝัน ถอดรหัสเลขเด็ดนำโชค 2 ตัว 3 ตัว พร้อมดูดวงชะตาวันเกิดตามตำราโบราณผสานจิตวิทยา ประมวลผลชั่วคราว ไม่เก็บข้อมูลบนเซิร์ฟเวอร์ ฟรี 100%',
             'keywords' => 'ทำนายฝัน, ดูดวง, ทำนายฝันเลขเด็ด, ฝันเห็นงู, ฝันเห็นช้าง, ดูดวงวันเกิด, ดูดวงไพ่ยิปซี, ดูดวงความรัก, ดูดวงการงาน, เลขมงคล',
             'toolName' => 'ดูดวง & ทำนายฝัน (เลขเด็ด)',
-            'activeNav' => 'horoscope'
+            'activeNav' => 'horoscope',
+            'recaptchaSiteKey' => $siteKey ?: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI' // Default to Google's public test key
         ]);
     }
 
     /**
-     * API Proxy for Groq AI Inference (Zero Retention / Ephemeral Only)
+     * API Proxy for Horoscope & Dream Inference (Zero Retention / Ephemeral Only)
      */
     public function apiHoroscope()
     {
@@ -312,8 +315,44 @@ class Tools extends BaseController
         $birthDate = trim($json['birthDate'] ?? '');
         $birthTime = trim($json['birthTime'] ?? '');
         $targetTopic = trim($json['targetTopic'] ?? 'ภาพรวมชีวิต');
-        $customApiKey = trim($json['customApiKey'] ?? '');
+        $recaptchaToken = trim($json['recaptchaToken'] ?? '');
 
+        // 1. Validate reCAPTCHA
+        $secretKey = getenv('RECAPTCHA_SECRET_KEY') ?: ($_ENV['RECAPTCHA_SECRET_KEY'] ?? '');
+        // If user configured a secret key, verify with Google
+        if (!empty($secretKey)) {
+            if (empty($recaptchaToken)) {
+                return $this->response->setStatusCode(400)->setJSON([
+                    'success' => false,
+                    'message' => 'กรุณากดยืนยันว่าคุณไม่ใช่โปรแกรมอัตโนมัติ (reCAPTCHA)'
+                ]);
+            }
+
+            $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
+            $ch = curl_init($verifyUrl);
+            curl_setopt_array($ch, [
+                CURLOPT_POST => true,
+                CURLOPT_POSTFIELDS => http_build_query([
+                    'secret' => $secretKey,
+                    'response' => $recaptchaToken,
+                    'remoteip' => $this->request->getIPAddress()
+                ]),
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT => 10
+            ]);
+            $rawVerify = curl_exec($ch);
+            curl_close($ch);
+            $verifyRes = json_decode($rawVerify, true);
+
+            if (empty($verifyRes['success'])) {
+                return $this->response->setStatusCode(400)->setJSON([
+                    'success' => false,
+                    'message' => 'การยืนยัน reCAPTCHA ไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง'
+                ]);
+            }
+        }
+
+        // 2. Validate Inputs
         if (empty($userInput) && empty($birthDate)) {
             return $this->response->setStatusCode(400)->setJSON([
                 'success' => false,
@@ -321,14 +360,14 @@ class Tools extends BaseController
             ]);
         }
 
-        // Determine Groq API Key
-        $apiKey = !empty($customApiKey) ? $customApiKey : (getenv('GROQ_API_KEY') ?: ($_ENV['GROQ_API_KEY'] ?? ''));
+        // 3. Determine Server Groq API Key
+        $apiKey = getenv('GROQ_API_KEY') ?: ($_ENV['GROQ_API_KEY'] ?? '');
 
         if (empty($apiKey)) {
-            return $this->response->setStatusCode(401)->setJSON([
+            return $this->response->setStatusCode(503)->setJSON([
                 'success' => false,
                 'needs_key' => true,
-                'message' => 'ไม่พบ Groq API Key บนเซิร์ฟเวอร์ กรุณาระบุ Groq API Key ของคุณ (รับฟรีได้ที่ console.groq.com) เพื่อเริ่มใช้งาน คีย์จะถูกเก็บในเครื่องของคุณเท่านั้น'
+                'message' => 'ระบบยังไม่ได้ตั้งค่า GROQ_API_KEY ในไฟล์ .env ของเซิร์ฟเวอร์'
             ]);
         }
 
