@@ -69,6 +69,11 @@
             </div>
         </div>
     </div>
+
+    <!-- Detailed Life Stage, Education Level & Milestones -->
+    <div id="age-milestones-card" class="milestone-card" style="margin-top: 1.5rem; display: none;">
+        <!-- Populated by JS -->
+    </div>
 </div>
 
 <!-- Tab 2: Date Difference -->

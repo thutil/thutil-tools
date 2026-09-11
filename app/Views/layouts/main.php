@@ -112,6 +112,17 @@
 
         <!-- Sidebar Navigation -->
         <aside id="app-sidebar" class="app-sidebar">
+            <!-- Dynamic Pinned Favorites Section -->
+            <div id="sidebar-favorites-section" class="sidebar-section" style="display: none; border-bottom: 1px solid var(--border-color); padding-bottom: 0.65rem;">
+                <div class="sidebar-title" style="color: #d97706; display: flex; align-items: center; gap: 0.35rem;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    <span>เครื่องมือโปรด (Favorites)</span>
+                </div>
+                <ul class="tool-nav-list" id="sidebar-favorites-list">
+                    <!-- Injected by JS -->
+                </ul>
+            </div>
+
             <div class="sidebar-section">
                 <div class="sidebar-title">เมนูหลัก</div>
                 <ul class="tool-nav-list">
@@ -484,6 +495,41 @@
 
         <!-- Main Workspace View -->
         <main class="app-content">
+            <!-- Default Landing Tool Redirect Banner -->
+            <div id="default-tool-banner" class="default-tool-banner" style="display: none;">
+                <div style="display: flex; align-items: center; gap: 0.6rem;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <span>เข้าสู่หน้านี้อัตโนมัติตามที่คุณตั้งค่าเป็นเครื่องมือเริ่มต้นไว้ (บันทึกในอุปกรณ์ผ่าน localStorage)</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <a href="<?= base_url('/?stay=1') ?>" style="font-weight: 700; text-decoration: underline; color: inherit;">ไปยังหน้าแรก (ศูนย์รวมเครื่องมือ)</a>
+                    <button type="button" id="btn-banner-clear-default" class="btn-pref" style="background: rgba(0,0,0,0.06); padding: 0.2rem 0.6rem;">ยกเลิกหน้าเริ่มต้น</button>
+                </div>
+            </div>
+
+            <?php if (($activeNav ?? '') !== 'home' && ($activeNav ?? '') !== 'terms'): ?>
+            <!-- Tool Quick Preferences Bar (Favorites & Default Landing Tool) -->
+            <div class="tool-pref-bar" id="tool-pref-bar" data-tool-slug="<?= esc($activeNav ?? '') ?>" data-tool-title="<?= esc($title ?? '') ?>" data-tool-url="<?= current_url() ?>">
+                <button type="button" id="btn-toggle-fav" class="btn-pref" title="ติดดาวเครื่องมือโปรด">
+                    <svg class="pref-star-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                    <span id="fav-label">เพิ่มในรายการโปรด</span>
+                </button>
+                <button type="button" id="btn-toggle-default-tool" class="btn-pref btn-pref-default" title="ตั้งเป็นหน้าเริ่มต้นเมื่อเปิดเว็บ">
+                    <svg class="pref-pin-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="17" x2="12" y2="22"></line>
+                        <path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a1 1 0 0 0 0-2H8a1 1 0 0 0 0 2h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"></path>
+                    </svg>
+                    <span id="default-tool-label">ตั้งเป็นหน้าเริ่มต้น (เปิดเว็บแล้วเจอเลย)</span>
+                </button>
+            </div>
+            <?php endif; ?>
+
             <?= $this->renderSection('content') ?>
 
             <!-- Formal Footer for Gen Y & Public -->

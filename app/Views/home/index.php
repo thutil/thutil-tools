@@ -120,6 +120,34 @@
     </div>
 </div>
 
+<!-- Home Default Tool Status Bar -->
+<div id="home-default-tool-status" class="default-tool-banner" style="display: none; margin-bottom: 1.5rem;">
+    <div style="display: flex; align-items: center; gap: 0.6rem;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="17" x2="12" y2="22"></line>
+            <path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a1 1 0 0 0 0-2H8a1 1 0 0 0 0 2h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"></path>
+        </svg>
+        <span>หน้าเริ่มต้นปัจจุบันของคุณ: <strong id="home-default-tool-name">...</strong> (บันทึกใน localStorage บนเครื่องของท่าน)</span>
+    </div>
+    <button type="button" id="btn-home-clear-default" class="btn-pref" style="background: rgba(0,0,0,0.06); padding: 0.25rem 0.65rem;">ยกเลิกหน้าเริ่มต้น</button>
+</div>
+
+<!-- Home Pinned Favorites Section -->
+<div id="home-favorites-section" style="display: none; margin-bottom: 2rem;">
+    <div class="service-section-banner" style="margin-bottom: 1rem;">
+        <h2 class="service-section-title" style="color: #d97706;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="2">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+            เครื่องมือโปรดของคุณ (Pinned Favorites)
+        </h2>
+        <div class="service-section-ribbon" style="background: linear-gradient(90deg, #f59e0b 0%, transparent 100%);"></div>
+    </div>
+    <div id="home-favorites-grid" class="overview-grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
+        <!-- Injected by JS -->
+    </div>
+</div>
+
 <!-- Recommended Services Section Header (แนะนำบริการ) -->
 <div class="service-section-banner">
     <h2 class="service-section-title">
