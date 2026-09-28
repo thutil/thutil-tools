@@ -41,4 +41,4 @@ Allow: /
 User-agent: cohere-ai
 Allow: /
 
-Sitemap: http://localhost:8080/sitemap.xml
+Sitemap: https://tools.thutil.com/sitemap.xml
