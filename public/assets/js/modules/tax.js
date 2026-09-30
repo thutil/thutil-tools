@@ -217,4 +217,133 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial run
     calculateTax();
+
+    // Attach Report Exporter
+    if (window.ReportExporter) {
+        window.ReportExporter.attachDropdown('#export-dropdown-tax', () => {
+            const salary = parseFloat(incomeSalary?.value) || 0;
+            const bonus = parseFloat(incomeBonus?.value) || 0;
+            const other = parseFloat(incomeOther?.value) || 0;
+            const wht = parseFloat(withholdingTax?.value) || 0;
+
+            const totalIncome = salary + bonus + other;
+            const standardExpense = Math.min(totalIncome * 0.50, 100000);
+
+            let familyDeductions = dedPersonal;
+            if (dedSpouseCheck && dedSpouseCheck.checked) {
+                familyDeductions += 60000;
+            }
+            const childCount = parseInt(dedChildren?.value) || 0;
+            familyDeductions += childCount * 30000;
+            const parentCount = parseInt(dedParents?.value) || 0;
+            familyDeductions += Math.min(parentCount, 4) * 30000;
+
+            const socialVal = Math.min(parseFloat(dedSocial?.value) || 0, 9000);
+            const healthVal = Math.min(parseFloat(dedHealthIns?.value) || 0, 25000);
+            const lifeVal = Math.min(parseFloat(dedLifeIns?.value) || 0, 100000);
+            const lifeHealthCombined = Math.min(healthVal + lifeVal, 100000);
+
+            const pvdVal = Math.min(parseFloat(dedPvd?.value) || 0, totalIncome * 0.15, 500000);
+            const rmfVal = Math.min(parseFloat(dedRmf?.value) || 0, totalIncome * 0.30, 500000);
+            const ssfVal = Math.min(parseFloat(dedSsf?.value) || 0, totalIncome * 0.30, 200000);
+            const retirementCombined = Math.min(pvdVal + rmfVal + ssfVal, 500000);
+
+            const thaiesgVal = Math.min(parseFloat(dedThaiesg?.value) || 0, totalIncome * 0.30, 300000);
+            const homeLoanVal = Math.min(parseFloat(dedHomeLoan?.value) || 0, 100000);
+            const easyEreceiptVal = Math.min(parseFloat(dedEasyEreceipt?.value) || 0, 50000);
+
+            const subTotalDeductions = familyDeductions + socialVal + lifeHealthCombined +
+                                      retirementCombined + thaiesgVal + homeLoanVal + easyEreceiptVal;
+
+            const incomeBeforeDonations = Math.max(0, totalIncome - standardExpense - subTotalDeductions);
+            const rawEduDonation = parseFloat(dedDonationEdu?.value) || 0;
+            const maxDonationLimit = incomeBeforeDonations * 0.10;
+            const eduDonationDeductible = Math.min(rawEduDonation * 2, maxDonationLimit);
+            const remainingDonationCap = Math.max(0, maxDonationLimit - eduDonationDeductible);
+            const rawGenDonation = parseFloat(dedDonationGeneral?.value) || 0;
+            const genDonationDeductible = Math.min(rawGenDonation, remainingDonationCap);
+            const totalDonations = eduDonationDeductible + genDonationDeductible;
+            const totalAllDeductions = subTotalDeductions + totalDonations;
+
+            const netIncome = Math.max(0, incomeBeforeDonations - totalDonations);
+
+            let totalTax = 0;
+            let highestRate = 0;
+            const bracketRows = [];
+
+            BRACKETS.forEach(bracket => {
+                if (netIncome > bracket.min) {
+                    const taxableInBracket = Math.min(netIncome, bracket.max) - bracket.min;
+                    const taxForBracket = taxableInBracket * bracket.rate;
+                    totalTax += taxForBracket;
+                    if (taxableInBracket > 0 && bracket.rate > highestRate) {
+                        highestRate = bracket.rate;
+                    }
+
+                    bracketRows.push([
+                        bracket.label,
+                        `${bracket.rate * 100}%`,
+                        taxableInBracket,
+                        taxForBracket
+                    ]);
+                }
+            });
+
+            const diff = totalTax - wht;
+            let statusText = 'ไม่ต้องชำระเพิ่มและไม่มีเงินคืน';
+            let statusVal = 0;
+            if (diff > 0) {
+                statusText = 'ยอดภาษีที่ต้องชำระเพิ่มเติม';
+                statusVal = diff;
+            } else if (diff < 0) {
+                statusText = 'ยอดที่ได้รับเงินคืนภาษี (ขอคืนได้)';
+                statusVal = Math.abs(diff);
+            }
+
+            const summaryRows = [
+                ['--- สรุปการคำนวณภาษีเงินได้บุคคลธรรมดา ---', ''],
+                ['เงินเดือนตลอดปี (บาท)', salary],
+                ['โบนัส (บาท)', bonus],
+                ['เงินได้อื่น ๆ (บาท)', other],
+                ['รวมเงินได้พึงประเมินทั้งปี (บาท)', totalIncome],
+                ['หักค่าใช้จ่าย 50% ตามกฎหมาย (บาท)', standardExpense],
+                ['หักค่าลดหย่อนส่วนตัวและครอบครัว (บาท)', familyDeductions],
+                ['หักเงินสมทบประกันสังคม (บาท)', socialVal],
+                ['หักเบี้ยประกันชีวิตและสุขภาพ (บาท)', lifeHealthCombined],
+                ['หักกองทุนสำรองเลี้ยงชีพ PVD/RMF/SSF (บาท)', retirementCombined],
+                ['หักกองทุน ThaiESG (บาท)', thaiesgVal],
+                ['หักดอกเบี้ยกู้ซื้อบ้าน (บาท)', homeLoanVal],
+                ['หัก Easy E-Receipt (บาท)', easyEreceiptVal],
+                ['หักเงินบริจาค (บาท)', totalDonations],
+                ['รวมค่าลดหย่อนทั้งหมด (บาท)', totalAllDeductions],
+                ['เงินได้สุทธิ / ฐานคำนวณภาษี (บาท)', netIncome],
+                ['ภาษีที่คำนวณได้จริง (บาท)', Math.round(totalTax)],
+                ['ภาษีหัก ณ ที่จ่ายสะสมที่จ่ายแล้ว (บาท)', wht],
+                ['อัตราภาษีสูงสุดที่เสีย (%)', `${highestRate * 100}%`],
+                ['สถานะผลลัพธ์ภาษี', statusText],
+                ['ยอดเงินสรุปสุทธิ (บาท)', Math.round(statusVal)],
+                []
+            ];
+
+            const bracketHeader = [
+                ['--- ตารางแจกแจงภาษีตามขั้นบันไดอัตราก้าวหน้า ---', '', '', ''],
+                ['ขั้นเงินได้สุทธิ', 'อัตราภาษี (%)', 'ฐานเงินได้ในขั้นนี้ (บาท)', 'ภาษีที่ต้องชำระในขั้นนี้ (บาท)']
+            ];
+
+            const allRows = [
+                ...summaryRows,
+                ...bracketHeader,
+                ...bracketRows
+            ];
+
+            return {
+                title: 'รายงานการคำนวณภาษีเงินได้บุคคลธรรมดา ภ.ง.ด. 90/91',
+                filename: `tax-report-${Date.now()}`,
+                rows: allRows,
+                sheets: {
+                    'สรุปผลและขั้นบันไดภาษี': allRows
+                }
+            };
+        });
+    }
 });

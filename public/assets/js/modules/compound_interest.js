@@ -112,4 +112,84 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     calculateCompound();
+
+    // Attach Report Exporter
+    if (window.ReportExporter) {
+        window.ReportExporter.attachDropdown('#export-dropdown-compound-interest', () => {
+            const initial = Math.max(0, parseFloat(initialInput?.value) || 0);
+            const monthly = Math.max(0, parseFloat(monthlyInput?.value) || 0);
+            const annualRatePercent = parseFloat(rateInput?.value) || 0;
+            const annualRate = annualRatePercent / 100;
+            const years = Math.max(1, parseInt(yearsInput?.value) || 10);
+            const freq = parseInt(freqSelect?.value) || 12;
+
+            let currentBalance = initial;
+            let currentPrincipal = initial;
+            const r = annualRate / 12;
+
+            const scheduleRows = [];
+            for (let y = 1; y <= years; y++) {
+                const startYearBalance = currentBalance;
+                const yearDeposit = monthly * 12;
+                currentPrincipal += yearDeposit;
+
+                for (let m = 1; m <= 12; m++) {
+                    currentBalance = (currentBalance + monthly) * (1 + r);
+                }
+
+                const interestEarnedThisYear = currentBalance - startYearBalance - yearDeposit;
+                const totalGainsSoFar = currentBalance - currentPrincipal;
+
+                scheduleRows.push([
+                    y,
+                    Math.round(currentPrincipal),
+                    Math.round(yearDeposit),
+                    Math.round(interestEarnedThisYear),
+                    Math.round(totalGainsSoFar),
+                    Math.round(currentBalance)
+                ]);
+            }
+
+            const totalWealth = Math.round(currentBalance);
+            const totalPrincipal = Math.round(currentPrincipal);
+            const totalInterest = Math.max(0, totalWealth - totalPrincipal);
+            const multiplier = totalPrincipal > 0 ? (totalWealth / totalPrincipal).toFixed(2) : 1;
+
+            const summaryRows = [
+                ['--- ข้อมูลการวางแผนและผลลัพธ์สรุป ---', ''],
+                ['เงินต้นตั้งต้น (บาท)', initial],
+                ['เงินออมสมทบทุกเดือน DCA (บาท)', monthly],
+                ['ผลตอบแทนคาดหวัง (% ต่อปี)', `${annualRatePercent}%`],
+                ['ระยะเวลาลงทุน (ปี)', `${years} ปี`],
+                ['ความถี่ในการทบต้น', freq === 12 ? 'ทบต้นรายเดือน (Monthly)' : 'ทบต้นรายปี (Annually)'],
+                ['เงินต้นที่จ่ายจริงรวม (บาท)', totalPrincipal],
+                ['กำไร/ดอกเบี้ยทบต้นสะสมทั้งหมด (บาท)', totalInterest],
+                ['มูลค่าเงินรวมในอนาคต (บาท)', totalWealth],
+                ['เติบโตเป็นจำนวนเท่าของเงินต้น', `${multiplier} เท่า`],
+                ['สัดส่วนเงินต้น (%)', `${((totalPrincipal / totalWealth) * 100).toFixed(1)}%`],
+                ['สัดส่วนกำไรดอกเบี้ย (%)', `${((totalInterest / totalWealth) * 100).toFixed(1)}%`],
+                []
+            ];
+
+            const scheduleHeader = [
+                ['--- ตารางแจกแจงการเติบโตของพอร์ตสะสมรายปี ---', '', '', '', '', ''],
+                ['ปีที่', 'เงินต้นสะสม (บาท)', 'เงินออมเพิ่มปีนี้ (บาท)', 'ดอกเบี้ยที่งอกเงยปีนี้ (บาท)', 'กำไรดอกเบี้ยสะสมรวม (บาท)', 'มูลค่าพอร์ตสิ้นปี (บาท)']
+            ];
+
+            const allRows = [
+                ...summaryRows,
+                ...scheduleHeader,
+                ...scheduleRows
+            ];
+
+            return {
+                title: 'รายงานการคำนวณดอกเบี้ยทบต้น & ออมเงิน DCA วางแผนเกษียณ',
+                filename: `compound-interest-report-${Date.now()}`,
+                rows: allRows,
+                sheets: {
+                    'สรุปผลและตารางเติบโต': allRows
+                }
+            };
+        });
+    }
 });

@@ -97,4 +97,56 @@ document.addEventListener('DOMContentLoaded', () => {
         inputSalary.value = '35000';
         update();
     }
+
+    // Attach Report Exporter
+    if (window.ReportExporter) {
+        window.ReportExporter.attachDropdown('#export-dropdown-salary', () => {
+            const salary = parseFloat(inputSalary ? inputSalary.value : 0) || 0;
+            const pvdRate = parseFloat(inputPvd ? inputPvd.value : 0) || 0;
+            const res = calculateSalary(salary, pvdRate);
+
+            const annualSsf = res.ssfMonthly * 12;
+            const annualPvd = res.pvdMonthly * 12;
+            const totalDeductionsMonthly = res.ssfMonthly + res.pvdMonthly + res.monthlyTax;
+            const totalDeductionsAnnual = annualSsf + annualPvd + res.annualTax;
+            const annualTakeHome = res.netTakeHome * 12;
+
+            const salaryTable = [
+                ['--- สรุปรายรับและรายการหักเงินเดือน (Monthly & Annual Payslip) ---', '', ''],
+                ['รายการ', 'รายเดือน (บาท)', 'รายปี (บาท)'],
+                ['เงินเดือนรวม (Gross Salary)', res.grossSalary, res.annualGross],
+                ['หักเงินสมทบประกันสังคม (5% สูงสุด 750 บ./ด.)', res.ssfMonthly, annualSsf],
+                [`หักกองทุนสำรองเลี้ยงชีพ PVD (${pvdRate}%)`, res.pvdMonthly, annualPvd],
+                ['หักภาษีเงินได้ ณ ที่จ่าย (ภ.ง.ด. 91)', res.monthlyTax, res.annualTax],
+                ['รวมรายการหักทั้งหมด', totalDeductionsMonthly, totalDeductionsAnnual],
+                ['เงินเดือนสุทธิเข้าบัญชี (Net Take-Home)', res.netTakeHome, annualTakeHome],
+                []
+            ];
+
+            const annualTaxSummary = [
+                ['--- รายละเอียดการประเมินภาษีเงินได้บุคคลธรรมดาประจำปี ---', ''],
+                ['เงินได้พึงประเมินทั้งปี (บาท)', res.annualGross],
+                ['หักค่าใช้จ่าย 50% ตามกฎหมาย (สูงสุด 100,000 บาท)', Math.min(res.annualGross * 0.5, 100000)],
+                ['หักลดหย่อนผู้มีเงินได้ส่วนตัว (บาท)', 60000],
+                ['หักเงินสมทบประกันสังคมทั้งปี (บาท)', annualSsf],
+                ['หักกองทุนสำรองเลี้ยงชีพทั้งปี (บาท)', annualPvd],
+                ['เงินได้สุทธิประจำปี / ฐานภาษี (บาท)', res.netTaxableIncome],
+                ['ประมาณการภาษีทั้งปีที่ต้องชำระ (บาท)', res.annualTax]
+            ];
+
+            const allRows = [
+                ...salaryTable,
+                ...annualTaxSummary
+            ];
+
+            return {
+                title: 'รายงานสรุปเงินเดือนสุทธิ ประกันสังคม และภาษีเงินได้บุคคลธรรมดา',
+                filename: `salary-slip-report-${Date.now()}`,
+                rows: allRows,
+                sheets: {
+                    'สรุปเงินเดือนและภาษี': allRows
+                }
+            };
+        });
+    }
 });

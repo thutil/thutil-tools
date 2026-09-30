@@ -1839,3 +1839,143 @@ tbody td {
     font-family: var(--font-mono, monospace);
 }
 
+/* ==========================================================================
+   Financial Reports Export Dropdown & Action Styling
+   ========================================================================== */
+.report-export-box {
+    margin-top: 1rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.report-export-desc {
+    font-size: 0.825rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.report-export-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.btn-export-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.42rem 0.85rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+}
+
+.btn-export-trigger:hover {
+    background: var(--bg-hover);
+    border-color: var(--border-hover);
+    color: var(--green-primary);
+}
+
+.btn-export-trigger.active {
+    border-color: var(--green-primary);
+    box-shadow: 0 0 0 2px var(--green-tint-border);
+}
+
+.btn-export-trigger .dropdown-chevron {
+    transition: transform 0.2s ease;
+}
+
+.btn-export-trigger.active .dropdown-chevron {
+    transform: rotate(180deg);
+}
+
+.export-menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 6px);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    min-width: 220px;
+    z-index: 100;
+    display: none;
+    flex-direction: column;
+    padding: 0.35rem;
+}
+
+[data-theme="dark"] .export-menu {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.export-menu.show {
+    display: flex;
+}
+
+.export-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.5rem 0.65rem;
+    border: none;
+    background: transparent;
+    border-radius: var(--radius-xs);
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    color: var(--text-primary);
+    transition: background 0.15s ease;
+}
+
+.export-menu-item:hover {
+    background: var(--bg-hover);
+}
+
+.export-menu-item .export-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: var(--font-mono, monospace);
+    letter-spacing: 0.5px;
+}
+
+.export-badge.xlsx {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #86efac;
+}
+
+.export-badge.csv {
+    background: #e0f2fe;
+    color: #075985;
+    border: 1px solid #7dd3fc;
+}
+
+.export-item-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.export-item-text strong {
+    font-size: 0.825rem;
+    line-height: 1.2;
+}
+
+.export-item-text small {
+    font-size: 0.725rem;
+    color: var(--text-muted);
+}
+

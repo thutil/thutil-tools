@@ -107,4 +107,100 @@ document.addEventListener('DOMContentLoaded', () => {
         if (selectMonths) selectMonths.value = '60';
         update();
     }
+
+    // Attach Report Exporter
+    if (window.ReportExporter) {
+        window.ReportExporter.attachDropdown('#export-dropdown-car-loan', () => {
+            const price = parseFloat(inputPrice.value) || 0;
+            const down = parseFloat(inputDown.value) || 0;
+            const isPercent = selectDownType.value === 'percent';
+            const rate = parseFloat(inputRate.value) || 0;
+            const months = parseInt(selectMonths.value, 10) || 48;
+
+            const res = calculateCarLoan(price, down, isPercent, rate, months);
+
+            // Summary Section
+            const summaryRows = [
+                ['--- ข้อมูลการคำนวณและผลลัพธ์สรุป ---', ''],
+                ['ราคารถยนต์ (บาท)', res.carPrice],
+                ['เงินดาวน์ (บาท)', res.downAmount],
+                ['สัดส่วนเงินดาวน์ (%)', `${res.downPercent}%`],
+                ['ยอดจัดไฟแนนซ์ / ยอดกู้ (บาท)', res.loanAmount],
+                ['อัตราดอกเบี้ยคงที่ต่อปี (Flat Rate %)', `${rate}%`],
+                ['ระยะเวลาผ่อนชำระ', `${months} งวด (${months / 12} ปี)`],
+                ['ค่างวดต่อเดือนก่อน VAT (บาท)', res.monthlyExVat],
+                ['VAT 7% ของค่างวดต่อเดือน (บาท)', res.vatMonthly],
+                ['ค่างวดต่อเดือนที่ต้องจ่ายจริง รวม VAT (บาท)', res.monthlyIncVat],
+                ['ดอกเบี้ยรวมตลอดสัญญา (บาท)', res.totalInterest],
+                ['ยอดรวมที่ต้องจ่ายตลอดสัญญา รวม VAT (บาท)', res.totalPayableContract],
+                ['อัตราดอกเบี้ยที่แท้จริงโดยประมาณ (Effective Rate %)', `${res.effectiveRate}% ต่อปี`],
+                []
+            ];
+
+            // Schedule Table Section
+            const scheduleHeader = [
+                ['--- ตารางแจกแจงค่างวดรายงวด (Amortization Schedule) ---', '', '', '', '', '', ''],
+                ['งวดที่', 'ค่างวดรวม VAT (บาท)', 'ค่างวดก่อน VAT (บาท)', 'ตัดเงินต้น (บาท)', 'ดอกเบี้ย (บาท)', 'ภาษีมูลค่าเพิ่ม VAT 7% (บาท)', 'เงินต้นคงเหลือ (บาท)']
+            ];
+
+            const scheduleRows = [];
+            const principalPerMonth = months > 0 ? res.loanAmount / months : 0;
+            const interestPerMonth = months > 0 ? res.totalInterest / months : 0;
+            let currentRemainingPrincipal = res.loanAmount;
+
+            let sumTotalPay = 0;
+            let sumExVat = 0;
+            let sumPrincipal = 0;
+            let sumInterest = 0;
+            let sumVat = 0;
+
+            for (let m = 1; m <= months; m++) {
+                currentRemainingPrincipal = Math.max(0, currentRemainingPrincipal - principalPerMonth);
+                // For the last month, round principal cleanly
+                const balance = m === months ? 0 : Math.round(currentRemainingPrincipal * 100) / 100;
+
+                sumTotalPay += res.monthlyIncVat;
+                sumExVat += res.monthlyExVat;
+                sumPrincipal += principalPerMonth;
+                sumInterest += interestPerMonth;
+                sumVat += res.vatMonthly;
+
+                scheduleRows.push([
+                    m,
+                    res.monthlyIncVat,
+                    res.monthlyExVat,
+                    Math.round(principalPerMonth * 100) / 100,
+                    Math.round(interestPerMonth * 100) / 100,
+                    res.vatMonthly,
+                    balance
+                ]);
+            }
+
+            // Total row
+            scheduleRows.push([
+                'รวมทั้งสิ้น',
+                Math.round(sumTotalPay * 100) / 100,
+                Math.round(sumExVat * 100) / 100,
+                Math.round(sumPrincipal * 100) / 100,
+                Math.round(sumInterest * 100) / 100,
+                Math.round(sumVat * 100) / 100,
+                0
+            ]);
+
+            const allRows = [
+                ...summaryRows,
+                ...scheduleHeader,
+                ...scheduleRows
+            ];
+
+            return {
+                title: 'ตารางคำนวณค่างวดรถยนต์และมอเตอร์ไซค์ (Flat Rate & VAT 7%)',
+                filename: `car-loan-report-${Date.now()}`,
+                rows: allRows,
+                sheets: {
+                    'สรุปผลและตารางค่างวด': allRows
+                }
+            };
+        });
+    }
 });

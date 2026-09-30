@@ -119,4 +119,128 @@ document.addEventListener('DOMContentLoaded', () => {
         if (inputExtra) inputExtra.value = '3000';
         update();
     }
+
+    // Attach Report Exporter
+    if (window.ReportExporter) {
+        window.ReportExporter.attachDropdown('#export-dropdown-home-loan', () => {
+            const P = parseFloat(inputLoan.value) || 0;
+            const annualRate = parseFloat(inputRate.value) || 0;
+            const termYears = parseInt(inputYears.value, 10) || 30;
+            const extra = parseFloat(inputExtra ? inputExtra.value : 0) || 0;
+
+            const res = calculateHomeLoan(P, annualRate, termYears, extra);
+            if (!res) return null;
+
+            // Summary Section
+            const summaryRows = [
+                ['--- ข้อมูลการคำนวณและผลลัพธ์สรุป ---', ''],
+                ['วงเงินกู้ซื้อบ้านเริ่มต้น (บาท)', res.principal],
+                ['อัตราดอกเบี้ยเฉลี่ย (% ต่อปี)', `${annualRate}%`],
+                ['ระยะเวลาผ่อนตามสัญญา (ปี)', `${termYears} ปี (${termYears * 12} งวด)`],
+                ['ค่างวดปกติต่อเดือน (บาท)', res.standardPayment],
+                ['เงินโปะเพิ่มต่อเดือน (บาท)', extra],
+                ['ยอดจ่ายต่อเดือนเมื่อรวมเงินโปะ (บาท)', res.actualMonthlyPay],
+                ['ดอกเบี้ยรวมกรณีผ่อนปกติ (บาท)', res.totalInterestStd],
+                ['ดอกเบี้ยรวมกรณีมีเงินโปะ (บาท)', res.totalInterestExtra],
+                ['ประหยัดดอกเบี้ยได้สุทธิ (บาท)', res.interestSaved],
+                ['ระยะเวลาที่ผ่อนหมดเร็วขึ้น', `${res.yearsSaved} ปี ${res.remMonthsSaved} เดือน (${res.monthsSaved} งวด)`],
+                ['ระยะเวลาผ่อนจริงเมื่อมีเงินโปะ (ปี)', `${res.finishedYears} ปี`],
+                ['ยอดชำระรวมทั้งหมด แผนปกติ (บาท)', res.totalPayableStd],
+                ['ยอดชำระรวมทั้งหมด แผนโปะเพิ่ม (บาท)', res.totalPayableExtra],
+                []
+            ];
+
+            // Detailed Amortization Comparison Table
+            const totalMonths = termYears * 12;
+            const r = (annualRate / 100) / 12;
+
+            const scheduleHeader = [
+                ['--- ตารางเปรียบเทียบการตัดเงินต้นและดอกเบี้ยรายงวด (Amortization Comparison) ---', '', '', '', '', '', '', ''],
+                [
+                    'งวดที่',
+                    'แผนปกติ: ค่างวด (บาท)',
+                    'แผนปกติ: ดอกเบี้ย (บาท)',
+                    'แผนปกติ: ตัดต้น (บาท)',
+                    'แผนปกติ: หนี้คงเหลือ (บาท)',
+                    'แผนโปะ: ค่างวดรวมโปะ (บาท)',
+                    'แผนโปะ: ดอกเบี้ย (บาท)',
+                    'แผนโปะ: ตัดต้น (บาท)',
+                    'แผนโปะ: หนี้คงเหลือ (บาท)'
+                ]
+            ];
+
+            const scheduleRows = [];
+            let balStd = P;
+            let balExt = P;
+            let extFinished = false;
+
+            for (let m = 1; m <= totalMonths; m++) {
+                // Std calculation
+                let intStd = 0;
+                let prinStd = 0;
+                if (balStd > 0) {
+                    intStd = balStd * r;
+                    prinStd = Math.min(balStd, res.standardPayment - intStd);
+                    balStd = Math.max(0, balStd - prinStd);
+                }
+
+                // Extra calculation
+                let payExt = 0;
+                let intExt = 0;
+                let prinExt = 0;
+                if (balExt > 0) {
+                    intExt = balExt * r;
+                    const desiredPay = res.standardPayment + extra;
+                    prinExt = Math.min(balExt, desiredPay - intExt);
+                    payExt = prinExt + intExt;
+                    balExt = Math.max(0, balExt - prinExt);
+                } else if (!extFinished) {
+                    extFinished = true;
+                }
+
+                // If both are finished, break
+                if (balStd <= 0 && balExt <= 0 && m > 1) {
+                    scheduleRows.push([
+                        m,
+                        Math.round(res.standardPayment),
+                        Math.round(intStd),
+                        Math.round(prinStd),
+                        Math.round(balStd),
+                        Math.round(payExt),
+                        Math.round(intExt),
+                        Math.round(prinExt),
+                        Math.round(balExt)
+                    ]);
+                    break;
+                }
+
+                scheduleRows.push([
+                    m,
+                    Math.round(res.standardPayment),
+                    Math.round(intStd),
+                    Math.round(prinStd),
+                    Math.round(balStd),
+                    Math.round(payExt),
+                    Math.round(intExt),
+                    Math.round(prinExt),
+                    Math.round(balExt)
+                ]);
+            }
+
+            const allRows = [
+                ...summaryRows,
+                ...scheduleHeader,
+                ...scheduleRows
+            ];
+
+            return {
+                title: 'รายงานคำนวณสินเชื่อบ้านและเปรียบเทียบการโปะบ้านลดต้นลดดอก',
+                filename: `home-loan-report-${Date.now()}`,
+                rows: allRows,
+                sheets: {
+                    'สรุปผลและตารางโปะบ้าน': allRows
+                }
+            };
+        });
+    }
 });

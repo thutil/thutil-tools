@@ -84,4 +84,57 @@ document.addEventListener('DOMContentLoaded', () => {
         amountInput.value = '10000';
         updateCalculations();
     }
+
+    // Attach Report Exporter
+    if (window.ReportExporter) {
+        window.ReportExporter.attachDropdown('#export-dropdown-vat-tax', () => {
+            const raw = amountInput ? amountInput.value.replace(/,/g, '') : '0';
+            const vatMode = vatModeSelect ? vatModeSelect.value : 'exclude';
+            const whtRate = whtRateSelect ? whtRateSelect.value : '3';
+
+            const res = calculateVatAndTax(raw, vatMode, whtRate);
+
+            let vatModeLabel = 'ไม่รวมภาษีมูลค่าเพิ่ม (Exclude VAT)';
+            if (vatMode === 'include') vatModeLabel = 'ราคารวมภาษีมูลค่าเพิ่มแล้ว (Include VAT)';
+            else if (vatMode === 'none') vatModeLabel = 'ไม่มีภาษีมูลค่าเพิ่ม (No VAT)';
+
+            const summaryRows = [
+                ['--- สรุปการคำนวณภาษีมูลค่าเพิ่มและภาษีหัก ณ ที่จ่าย ---', ''],
+                ['ยอดเงินต้นทางที่ระบุ (บาท)', parseFloat(raw) || 0],
+                ['รูปแบบภาษีมูลค่าเพิ่ม', vatModeLabel],
+                ['อัตราภาษีหัก ณ ที่จ่าย (%)', `${res.whtRate}%`],
+                ['มูลค่าสินค้า/บริการก่อน VAT (บาท)', res.baseAmount],
+                ['ภาษีมูลค่าเพิ่ม VAT 7% (บาท)', res.vatAmount],
+                ['ยอดรวมก่อนหัก ณ ที่จ่าย (บาท)', res.grossTotal],
+                ['ภาษีหัก ณ ที่จ่ายที่ต้องนำส่งสรรพากร (บาท)', res.whtAmount],
+                ['ยอดเงินจ่ายให้ผู้รับสุทธิ Net Payable (บาท)', res.netPayable],
+                []
+            ];
+
+            // Comparative table for all standard WHT rates
+            const whtTable = [
+                ['--- ตารางเปรียบเทียบภาษีหัก ณ ที่จ่ายตามประเภทเงินได้ ---', '', '', ''],
+                ['ประเภทรายการเงินได้', 'อัตรา (%)', 'ภาษีหัก ณ ที่จ่าย (บาท)', 'ยอดจ่ายสุทธิ Net Payable (บาท)'],
+                ['ไม่มีการหัก ณ ที่จ่าย (0%)', '0%', 0, res.grossTotal],
+                ['ค่าขนส่ง (1%)', '1%', Math.round(res.baseAmount * 0.01 * 100) / 100, Math.round((res.grossTotal - res.baseAmount * 0.01) * 100) / 100],
+                ['ค่าโฆษณา (2%)', '2%', Math.round(res.baseAmount * 0.02 * 100) / 100, Math.round((res.grossTotal - res.baseAmount * 0.02) * 100) / 100],
+                ['ค่าบริการ / จ้างทำของ / ฟรีแลนซ์ (3%)', '3%', Math.round(res.baseAmount * 0.03 * 100) / 100, Math.round((res.grossTotal - res.baseAmount * 0.03) * 100) / 100],
+                ['ค่าเช่าทรัพย์สิน / รางวัล (5%)', '5%', Math.round(res.baseAmount * 0.05 * 100) / 100, Math.round((res.grossTotal - res.baseAmount * 0.05) * 100) / 100]
+            ];
+
+            const allRows = [
+                ...summaryRows,
+                ...whtTable
+            ];
+
+            return {
+                title: 'รายงานคำนวณภาษีมูลค่าเพิ่ม (VAT 7%) และภาษีหัก ณ ที่จ่าย',
+                filename: `vat-wht-report-${Date.now()}`,
+                rows: allRows,
+                sheets: {
+                    'สรุป VAT และหัก ณ ที่จ่าย': allRows
+                }
+            };
+        });
+    }
 });
